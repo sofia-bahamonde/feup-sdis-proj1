@@ -13,30 +13,29 @@ public class Server {
 		  return;
 	  }
 	  
-	  int port = Integer.parseInt(args[0]);
+	  int r_port = Integer.parseInt(args[0]);
+	  DatagramSocket socket = new DatagramSocket(r_port);
 	  
-	  DatagramSocket socket = new DatagramSocket(port);
-	  
-      byte[] buffer = new byte[1024];
-    
-  
-      while(true){
-    	  	System.out.println("Receiving");
-    	  	
-            DatagramPacket receivePacket = new DatagramPacket(buffer, buffer.length);
-            
-            socket.receive(receivePacket);
-            String request = new String(receivePacket.getData());
-            System.out.println("RECEIVED: " + request);
-            
-            InetAddress IPAddress = receivePacket.getAddress();
-            
-            String response = request.toUpperCase();
-            buffer = response.getBytes();
-            
-            DatagramPacket sendPacket = new DatagramPacket(buffer, buffer.length, IPAddress, port);
-            socket.send(sendPacket);
-         }
+	  byte[] r_buffer = new byte[1024];
+      byte[] s_buffer = new byte[1024];
+      
+      while (true) {
+    	// receive request 
+		DatagramPacket receivePacket = new DatagramPacket(r_buffer, r_buffer.length);
+		socket.receive(receivePacket);
+		String request = new String(receivePacket.getData());
+		System.out.println("RECEIVED: " + request);
+		
+		// handle request
+		InetAddress adress = receivePacket.getAddress();
+		int s_port = receivePacket.getPort();
+		String capitalizedSentence = request.toUpperCase();
+		
+		// send response
+		s_buffer = capitalizedSentence.getBytes();
+		DatagramPacket sendPacket = new DatagramPacket(s_buffer, s_buffer.length, adress, s_port);
+		socket.send(sendPacket);
+		}
       
       /*
       System.out.println("Ending Connection");

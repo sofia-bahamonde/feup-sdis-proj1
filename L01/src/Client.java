@@ -6,69 +6,71 @@ import java.net.InetAddress;
 
 public class Client {
 	
-  private static int port;
-
   public static void main(String[] args) throws IOException{
-
-    valid_arguments(args);
+	  
+    if(!valid_arguments(args)) return;
     
-    DatagramSocket socket = new DatagramSocket();
-	byte[] buffer = new byte[1024];
-	
-	buffer = "yoyoyoyoo   yoy".getBytes();
-	
-	
+	int port = Integer.parseInt(args[1]);
 	InetAddress address = InetAddress.getByName(args[0]);
+	DatagramSocket socket = new DatagramSocket();
+
+	byte[] s_buffer = new byte[1024];
+	byte[] r_buffer = new byte[1024];
 	
-	DatagramPacket packet = new DatagramPacket(buffer, buffer.length,address,port);
-	socket.send(packet);
+	// send request
+	System.out.println("Sending Request");
+	String request = create_request(args);
+	s_buffer = request.getBytes();
+	DatagramPacket sendPacket = new DatagramPacket(s_buffer, s_buffer.length, address, port);
+	socket.send(sendPacket);
 	
-	// get response
-	packet= new DatagramPacket(buffer,buffer.length);
-	socket.receive(packet);
+	// receive response
+	DatagramPacket receivePacket = new DatagramPacket(r_buffer, r_buffer.length);
+	socket.receive(receivePacket);
+	String modifiedSentence = new String(receivePacket.getData());
 	
-	// display response
-	String received= new String(packet.getData());
-	System.out.println("Echoed Message:" + received);
+	// print response
+	System.out.println("RESPONSE:" + modifiedSentence);
 	socket.close();
+	
+	System.out.println("Connection End");
+	
+	return;
 
 
-
+  }
+  
+  private static String create_request(String[] args) {
+	  String request= "";
+	  
+	  request += args[2].toUpperCase() + " ";
+	  
+	  for(int i =3; i <args.length; i++)
+		  request += args[i] + " ";
+		  
+	  request = request.substring(0, request.length() - 1);
+	  
+	  return request;
   }
 
   private static boolean valid_arguments(String[] args){
 	  
-	  if(args.length != 4) {
-		  System.out.println("ERROR - invalid number of arguments!");
+	  if(args[2].equals("register")){
+		  if(args.length != 5) {
+		  System.out.println("ERROR - Invalid operands");
+		  return false;
+		  }
+	  }else if(args[2].equals("lookup")) {
+		  if(args.length != 4) {
+		  System.out.println("ERROR - Invalid operands");
+		  return false;
+	  	}
+	  }else {
+		  System.out.println("ERROR - Invalid operation");
 		  return false;
 	  }
-	  
-	  port = Integer.parseInt(args[1]);
-	  
-	  
-	  if(!args[2].equals("register") && !args[2].equals("lookup")) {
-		  System.out.println("ERROR - invalid operation!");
-		  return false;
-	  }
-	  
-	  /*
-	  System.out.println(args[3]);
-	  
-	  String[] operands = args[3].split(",");
-	  
-	  System.out.println(operands);
 	  
 	
-	  if(args[3][0].length != 8) {
-		  System.out.println("ERROR - invalid operation!");
-		  return false;
-	  }
-	  
-	  if(args[2].equals("lookup")) {
-		  
-		  for(int i = 0; i <)
-	  }*/
-	  
 	  return true;
 
   }
