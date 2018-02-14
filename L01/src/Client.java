@@ -57,12 +57,12 @@ public class Client {
 	  
 	  if(args[2].equals("register")){
 		  if(args.length != 5) {
-		  System.out.println("ERROR - Invalid operands");
+		  System.out.println("ERROR - Invalid number of operands");
 		  return false;
 		  }
 	  }else if(args[2].equals("lookup")) {
 		  if(args.length != 4) {
-		  System.out.println("ERROR - Invalid operands");
+		  System.out.println("ERROR - Invalid number of operands");
 		  return false;
 	  	}
 	  }else {
@@ -70,10 +70,23 @@ public class Client {
 		  return false;
 	  }
 	  
+	  if(!valid_plate(args[3])) {
+		  System.out.println("ERROR - Invalid plate");
+		  return false;
+	  }
+	  
 	
 	  return true;
 
   }
+
+private static boolean valid_plate(String plate) {
+	if(plate.length() != 8) return false;
+	
+	if(plate.charAt(2) != '-' || plate.charAt(5) != '-' )return false;
+	
+	return true;
+}
 
 
 }
