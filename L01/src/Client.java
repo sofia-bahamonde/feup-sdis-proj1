@@ -27,12 +27,13 @@ public class Client {
 	// receive response
 	DatagramPacket receivePacket = new DatagramPacket(r_buffer, r_buffer.length);
 	socket.receive(receivePacket);
-	String modifiedSentence = new String(receivePacket.getData());
+	String response = new String(receivePacket.getData());
 	
 	// print response
-	System.out.println("RESPONSE:" + modifiedSentence);
-	socket.close();
+	System.out.println("RESPONSE:" + response);
 	
+	// end connection
+	socket.close();
 	System.out.println("Connection End");
 	
 	return;

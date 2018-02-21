@@ -2,11 +2,12 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.HashMap;
+import java.util.Hashtable;
+
 
 public class Server {
 	
-  private static HashMap<String, String> data_base;
+  private static Hashtable<String, String> data_base;
 
   public static void main(String[] args) throws IOException{
 	  
@@ -16,15 +17,18 @@ public class Server {
 		  return;
 	  }
 	  
-	  data_base = new HashMap<String, String>();
+	  data_base = new Hashtable<String, String>();
 	  
 	  int r_port = Integer.parseInt(args[0]);
 	  DatagramSocket socket = new DatagramSocket(r_port);
 	  
-	  byte[] r_buffer = new byte[1024];
-      byte[] s_buffer = new byte[1024];
-      
+	  
       while (true) {
+    	  
+    	byte[] r_buffer = new byte[1024];
+        byte[] s_buffer = new byte[1024];
+    	  
+  
     	// receive request 
 		DatagramPacket receivePacket = new DatagramPacket(r_buffer, r_buffer.length);
 		socket.receive(receivePacket);
@@ -55,9 +59,8 @@ private static String handleRequest(String request) {
 	
 	String request_type = array[0];
 	String plate = array[1];
-
 	
-	if(request_type.equals("REQUEST")) {
+	if(request_type.equals("REGISTER")) {
 		if(!data_base.containsKey(plate)) {
 			String name = "";
 			
@@ -72,12 +75,13 @@ private static String handleRequest(String request) {
 		}else return "-1";
 			
 	}else if(request_type.equals("LOOKUP")) {
+		
 		if(data_base.containsKey(plate)) {
-			return data_base.get()
+			return data_base.get(plate);
 		}else return "NOT_FOUND";
 	}
 	
-	return null;
+	return "-1";
 }
 
 
