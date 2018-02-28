@@ -1,2 +1,6 @@
 /Client.class
 /Server.class
+/Server$RemindTask.class
+/Server$AdvertiseTask.class
+/Server$Advertise$AdvertiseTask.class
+/Server$Advertise.class
