@@ -1,5 +1,5 @@
 # SDIS
 
-> rmiregistry &
-> java Peer
-> java TestApp
+> rmiregistry &</br>
+> java Peer</br>
+> java TestApp</br>
