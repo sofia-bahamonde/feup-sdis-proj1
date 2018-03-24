@@ -1,13 +1,12 @@
-import common.Hello;
-
+        
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
         
-public class Peer implements Hello {
+public class Server implements Hello {
         
-    public Peer() {}
+    public Server() {}
 
     public String sayHello() {
         return "Hello, world!";
@@ -16,7 +15,7 @@ public class Peer implements Hello {
     public static void main(String args[]) {
         
         try {
-            Peer obj = new Peer();
+            Server obj = new Server();
             Hello stub = (Hello) UnicastRemoteObject.exportObject(obj, 0);
 
             // Bind the remote object's stub in the registry
