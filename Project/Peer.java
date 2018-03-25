@@ -1,26 +1,41 @@
         
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
         
 public class Peer implements InterfaceRMI {
         
-    public Peer() {}
-
+ 
     public String backup() {
-        return "Hello, world!";
+        return "BACKUP";
     }
         
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException {
     	
+    	// variable initialization
     	double version = Double.parseDouble(args[0]);
         double server_id = Integer.parseInt(args[1]);
         String peer_ap = args[2];
-    	
+        
         System.out.println("version : " + version);
         System.out.println("server_id : " + server_id);
-        System.out.println("acces point : " + peer_ap);
+        System.out.println("access point : " + peer_ap);
+        
+        // communication channels initialization
+        Channel MC = new Channel(args[3], args[4]);
+        
+        System.out.println();
+        System.out.println("MC : " + args[3] + " " + args[4]);
+        System.out.println();
+        
+        if(server_id==2) MC.sendMessage();
+        
+        new Thread(MC).start();
+        
+  
+        
         
         try {
             Peer obj = new Peer();
