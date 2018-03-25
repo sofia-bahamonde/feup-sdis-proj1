@@ -1,2 +1,1 @@
-mkdir bin &>/dev/null
-javac -d bin/ Hello.java Server.java Client.java
+javac InterfaceRMI.java Peer.java TestApp.java
