@@ -1,5 +1,5 @@
 # SDIS
 
-> rmiregistry -J-Djava.rmi.server.codebase=file:///<path-to-module>/ </br>
-> java Peer</br>
+> rmiregistry &</br>
+> java Peer 1.0 1 yo 224.0.0.0 4445 224.0.0.1 4446 224.0.0.2 4447</br>
 > java TestApp</br>

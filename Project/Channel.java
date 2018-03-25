@@ -45,9 +45,9 @@ public class Channel implements Runnable{
 		
 	}
 	
-	 public synchronized void sendMessage() {
+	 public synchronized void sendMessage(String msg) {
 
-		 	String msg ="Pintou";
+		 	
 	        DatagramPacket packet = new DatagramPacket(msg.getBytes(), msg.getBytes().length, mcast_addr, mcast_port);
 
 	        try {
