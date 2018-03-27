@@ -1,24 +1,67 @@
 
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 public class TestApp {
-
+	
+	static InterfaceRMI stub;
+	
     private TestApp() {}
 
     public static void main(String[] args) {
     	
+    	// main variables initialization
     	String peer_ap = args[0];
-        //String operation = args[1].toUpperCase();
+        String sub_protocol = args[1].toUpperCase();
+        
+        System.out.println("access point: " + peer_ap);
+        System.out.println("subprotocol: " + sub_protocol);
 
+        // establishing connection
         try {
             Registry registry = LocateRegistry.getRegistry("localhost");
-            InterfaceRMI stub = (InterfaceRMI) registry.lookup(peer_ap);
-            String response = stub.backup();
-            System.out.println("response: " + response);
+            stub = (InterfaceRMI) registry.lookup(peer_ap);
+
         } catch (Exception e) {
-            System.err.println("Error:: Connection with access point '" + peer_ap + "' failed");
-            return;
+        	System.err.println("RMI exception: " + e.toString());
+            e.printStackTrace();
+        }
+        
+        switch(sub_protocol){
+        	case "BACKUP":
+	        	if(args.length != 4) {
+	        		System.out.println("Error: Invalid arguements");
+	        		System.out.println("Usage: TestApp <peer_ap> <sub_protocol> <file_path> <rep_degree>");
+	        	}
+	        	
+	        	String file_path = args[2];
+	        	int rep_degree = Integer.parseInt(args[3]);
+	        	
+	        	if(rep_degree >9) {
+	        		System.out.println("Error: Invalid replication degree");
+	        		System.out.println("Must be an integer lower than 10");
+	        	}
+	        	
+	        	try {
+	                if (stub.backup(file_path, rep_degree))
+	                    System.out.println("Backcup done successfully.");
+	                else
+	                    System.out.println("Backup failed.");
+	            } catch (RemoteException e) {
+	            	 System.err.println("Backup exception: " + e.toString());
+	                 e.printStackTrace();
+	            }
+            break;
+            
+            
+        	
+        	
+        	
+        	default:
+        		System.out.println("Error: Invalid subprotocol");
+        		System.out.println("Subprotocols - BACKUP RESTORE DELETE RECLAIM STATE");
+        
         }
     }
 }

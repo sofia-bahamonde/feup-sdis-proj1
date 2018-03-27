@@ -16,10 +16,6 @@ public class Peer implements InterfaceRMI {
     Channel MDR;
         
  
-    public String backup() {
-        return "BACKUP";
-    }
-        
     public static void main(String args[]) throws IOException {
     	
     	initialize(args);
@@ -71,5 +67,11 @@ public class Peer implements InterfaceRMI {
         
         System.out.println();
 		
+	}
+
+	@Override
+	public boolean backup(String file_path, int rep_degree) throws RemoteException {
+		System.out.println("BACKUP");
+		return false;
 	}
 }
