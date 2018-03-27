@@ -2,6 +2,8 @@ package protocols;
 
 import java.io.File;
 
+import peer.Peer;
+
 public class Backup implements Runnable{
 	
 	private File file;
@@ -15,7 +17,7 @@ public class Backup implements Runnable{
 	@Override
 	public void run() {
 		
-		
+		Peer.getController().sendPUTCHUNK();
 	}
 	
 }

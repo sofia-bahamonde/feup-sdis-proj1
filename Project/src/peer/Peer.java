@@ -11,15 +11,15 @@ import protocols.Backup;
 
 public class Peer implements InterfaceRMI {
 	
-	static double version;
-    static double server_id;
-    static String peer_ap;
+	private static double version;
+    private static double server_id;
+    private static String peer_ap;
     
-    Channel MC;
-    Channel MDB;
-    Channel MDR;
+    private static Channel MC;
+    private static Channel MDB;
+    private static Channel MDR;
     
-    static Controller controller;
+    private static Controller controller;
         
  
     public static void main(String args[]) throws IOException {
@@ -50,9 +50,9 @@ public class Peer implements InterfaceRMI {
         peer_ap = args[2];
         
         // communication channels initialization
-        Channel MC = new Channel(args[3], args[4]);
-        Channel MDB = new Channel(args[5], args[6]);
-        Channel MDR = new Channel(args[7], args[8]);
+        MC = new Channel(args[3], args[4]);
+        MDB = new Channel(args[5], args[6]);
+        MDR = new Channel(args[7], args[8]);
         
         // start channel threads
         new Thread(MC).start();
@@ -82,5 +82,13 @@ public class Peer implements InterfaceRMI {
 		System.out.println("BACKUP");
 		Backup inititator = new Backup(file_path,rep_degree);
 		new Thread(inititator).start();
+	}
+	
+	public static Channel getMDB() {
+		return MDB;
+	}
+	
+	public static Controller getController(){
+		return controller;
 	}
 }
