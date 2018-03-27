@@ -1,1 +1,1 @@
-javac InterfaceRMI.java Peer.java TestApp.java
+javac -sourcepath src/ common/InterfaceRMI.java peer/Peer.java test/TestApp.java peer/Channel.java

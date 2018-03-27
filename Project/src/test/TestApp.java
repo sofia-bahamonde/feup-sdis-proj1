@@ -1,7 +1,10 @@
+package test;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+
+import common.InterfaceRMI;
 
 public class TestApp {
 	
@@ -44,15 +47,12 @@ public class TestApp {
 	        	}
 	        	
 	        	try {
-	                if (stub.backup(file_path, rep_degree))
-	                    System.out.println("Backcup done successfully.");
-	                else
-	                    System.out.println("Backup failed.");
+	               stub.backup(file_path, rep_degree);
 	            } catch (RemoteException e) {
 	            	 System.err.println("Backup exception: " + e.toString());
 	                 e.printStackTrace();
 	            }
-            break;
+	        	break;
             
             
         	

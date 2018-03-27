@@ -1,10 +1,14 @@
-        
+package peer;
+
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-        
+
+import common.InterfaceRMI;
+import protocols.Backup;
+
 public class Peer implements InterfaceRMI {
 	
 	static double version;
@@ -14,6 +18,8 @@ public class Peer implements InterfaceRMI {
     Channel MC;
     Channel MDB;
     Channel MDR;
+    
+    static Controller controller;
         
  
     public static void main(String args[]) throws IOException {
@@ -53,6 +59,8 @@ public class Peer implements InterfaceRMI {
         new Thread(MDB).start();
         new Thread(MDR).start();
         
+        // controller initialization
+        controller = new Controller(version);
         
         // print main info 
         System.out.println("version : " + version);
@@ -70,8 +78,9 @@ public class Peer implements InterfaceRMI {
 	}
 
 	@Override
-	public boolean backup(String file_path, int rep_degree) throws RemoteException {
+	public void backup(String file_path, int rep_degree) throws RemoteException {
 		System.out.println("BACKUP");
-		return false;
+		Backup inititator = new Backup(file_path,rep_degree);
+		new Thread(inititator).start();
 	}
 }
