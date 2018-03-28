@@ -53,7 +53,7 @@ public class TestApp {
 	        	
 	        	try {
 	               stub.backup(file_path, rep_degree);
-	               System.out.println("Sent.");
+	               System.out.println("\nSent");
 	            } catch (RemoteException e) {
 	            	 System.err.println("Backup exception: " + e.toString());
 	                 e.printStackTrace();

@@ -3,3 +3,5 @@
 /Controller.class
 /MsgManager.class
 /FileManager.class
+/Chunk.class
+/MsgForwarder.class

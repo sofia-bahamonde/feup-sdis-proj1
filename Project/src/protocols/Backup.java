@@ -2,7 +2,11 @@ package protocols;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
+import common.Utils;
+import peer.Chunk;
 import peer.FileManager;
 import peer.Peer;
 
@@ -20,15 +24,48 @@ public class Backup implements Runnable{
 	public void run() {
 
 		try {
-			byte[] data = FileManager.loadFile(file);
-			System.out.println(data.length);
+			byte[] file_data = FileManager.loadFileBytes(file);
+			String file_id = Utils.getFileID(file);
+			
+			// gets number of chunks
+			int chunks_num= file_data.length / (Chunk.MAX_SIZE) +1;
+			
+			System.out.println("\n---- BACKUP ----");
+			System.out.println("File: " + file.getName());
+			System.out.println("Chunks: " + chunks_num);
+			System.out.println("Replication Degree: " + rep_degree);
+			
+		 
+			for(int i =0; i < chunks_num; i++) {
+				
+				// gets chunk data
+				byte[] data;
+				
+				if(i == chunks_num-1) {
+					if(file_data.length % Chunk.MAX_SIZE ==0) {
+						data= new byte[0];
+					}else {
+						data= Arrays.copyOfRange(file_data, i*Chunk.MAX_SIZE, file_data.length %Chunk.MAX_SIZE);
+					}
+				}else {
+					data= Arrays.copyOfRange(file_data, i*Chunk.MAX_SIZE, (i+1)*Chunk.MAX_SIZE);
+				}
+				
+				// creates chunk 
+				Chunk chunk=new Chunk(i,file_id,data,rep_degree);
+				
+				// chunk backup
+				chunk.backup();
+				
+			}
+			
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
 		
 	
-		
-		Peer.getController().sendPUTCHUNK();
 	}
 	
 }

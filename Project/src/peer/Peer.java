@@ -12,14 +12,14 @@ import protocols.Backup;
 public class Peer implements InterfaceRMI {
 	
 	private static double version;
-    private static double server_id;
+    private static int server_id;
     private static String peer_ap;
     
     private static Channel MC;
     private static Channel MDB;
     private static Channel MDR;
     
-    private static MsgManager controller;
+    private static MsgForwarder msg_forwarder;
         
  
     public static void main(String args[]) throws IOException {
@@ -60,7 +60,7 @@ public class Peer implements InterfaceRMI {
         new Thread(MDR).start();
         
         // controller initialization
-        controller = new MsgManager(version);
+        msg_forwarder = new MsgForwarder(version);
         
         // print main info 
         System.out.println("version : " + version);
@@ -79,7 +79,6 @@ public class Peer implements InterfaceRMI {
 
 	@Override
 	public void backup(String file_path, int rep_degree) throws RemoteException {
-		System.out.println("BACKUP");
 		Backup inititator = new Backup(file_path,rep_degree);
 		new Thread(inititator).start();
 	}
@@ -88,7 +87,12 @@ public class Peer implements InterfaceRMI {
 		return MDB;
 	}
 	
-	public static MsgManager getController(){
-		return controller;
+	public static MsgForwarder getMsgForwarder(){
+		return msg_forwarder;
 	}
+
+	public static int getServerID() {
+		return server_id;
+	}
+
 }

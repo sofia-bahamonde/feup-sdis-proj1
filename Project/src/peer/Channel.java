@@ -35,7 +35,7 @@ public class Channel implements Runnable{
 				DatagramPacket packet = new DatagramPacket(buf, buf.length);
 				mcast_socket.receive(packet);
 				String msg = new String(buf, 0, buf.length);
-				System.out.println(msg);
+				handler(msg);
 
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -46,16 +46,21 @@ public class Channel implements Runnable{
 		mcast_socket.close();
 		
 	}
-	
-	 public synchronized void sendMessage(String msg) {
 
-	        DatagramPacket packet = new DatagramPacket(msg.getBytes(), msg.getBytes().length, mcast_addr, mcast_port);
+	public synchronized void sendMessage(byte[] msg) {
+
+	        DatagramPacket packet = new DatagramPacket(msg, msg.length, mcast_addr, mcast_port);
 
 	        try {
 	            mcast_socket.send(packet);
 	        } catch (IOException e) {
 	        	e.printStackTrace();
 	        }
+	}
+	
+	 private void handler(String msg) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
