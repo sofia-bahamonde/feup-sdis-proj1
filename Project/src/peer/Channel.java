@@ -49,7 +49,6 @@ public class Channel implements Runnable{
 	
 	 public synchronized void sendMessage(String msg) {
 
-		 	
 	        DatagramPacket packet = new DatagramPacket(msg.getBytes(), msg.getBytes().length, mcast_addr, mcast_port);
 
 	        try {

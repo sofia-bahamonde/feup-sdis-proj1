@@ -19,7 +19,7 @@ public class Peer implements InterfaceRMI {
     private static Channel MDB;
     private static Channel MDR;
     
-    private static Controller controller;
+    private static MsgManager controller;
         
  
     public static void main(String args[]) throws IOException {
@@ -60,7 +60,7 @@ public class Peer implements InterfaceRMI {
         new Thread(MDR).start();
         
         // controller initialization
-        controller = new Controller(version);
+        controller = new MsgManager(version);
         
         // print main info 
         System.out.println("version : " + version);
@@ -88,7 +88,7 @@ public class Peer implements InterfaceRMI {
 		return MDB;
 	}
 	
-	public static Controller getController(){
+	public static MsgManager getController(){
 		return controller;
 	}
 }

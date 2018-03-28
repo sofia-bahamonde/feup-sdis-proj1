@@ -1,7 +1,9 @@
 package protocols;
 
 import java.io.File;
+import java.io.IOException;
 
+import peer.FileManager;
 import peer.Peer;
 
 public class Backup implements Runnable{
@@ -16,6 +18,15 @@ public class Backup implements Runnable{
 
 	@Override
 	public void run() {
+
+		try {
+			byte[] data = FileManager.loadFile(file);
+			System.out.println(data.length);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	
 		
 		Peer.getController().sendPUTCHUNK();
 	}

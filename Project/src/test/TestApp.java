@@ -46,8 +46,14 @@ public class TestApp {
 	        		System.out.println("Must be an integer lower than 10");
 	        	}
 	        	
+
+	            System.out.println("file path: " + file_path);
+	            System.out.println("replication degree: " + rep_degree);
+
+	        	
 	        	try {
 	               stub.backup(file_path, rep_degree);
+	               System.out.println("Sent.");
 	            } catch (RemoteException e) {
 	            	 System.err.println("Backup exception: " + e.toString());
 	                 e.printStackTrace();
