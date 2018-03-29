@@ -11,6 +11,7 @@ import java.rmi.server.UnicastRemoteObject;
 
 import channel.Channel;
 import common.InterfaceRMI;
+import messages.MsgForwarder;
 import protocols.Backup;
 
 public class Peer implements InterfaceRMI {
@@ -24,7 +25,7 @@ public class Peer implements InterfaceRMI {
     private static Channel MDR;
     
     private static Database database;
-    private static Messages msg_forwarder;
+    private static MsgForwarder msg_forwarder;
         
  
     public static void main(String args[]) throws IOException {
@@ -64,7 +65,7 @@ public class Peer implements InterfaceRMI {
         new Thread(MDB).start();
         new Thread(MDR).start();
 
-        msg_forwarder = new Messages(version);
+        msg_forwarder = new MsgForwarder(version);
        
         database = new Database();
 		saveDatabase();
@@ -114,7 +115,7 @@ public class Peer implements InterfaceRMI {
 		return MDB;
 	}
 	
-	public static Messages getMsgForwarder(){
+	public static MsgForwarder getMsgForwarder(){
 		return msg_forwarder;
 	}
 
