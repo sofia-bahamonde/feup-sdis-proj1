@@ -8,6 +8,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
+import common.Utils;
 import peer.Peer;
 
 
@@ -39,7 +40,11 @@ public class Channel implements Runnable{
 			try {
 				DatagramPacket packet = new DatagramPacket(buf, buf.length);
 				mcast_socket.receive(packet);
-				handler(packet);
+				String[] header_tokens = Utils.parseHeader(packet);
+				if(Integer.parseInt(header_tokens[2]) == Peer.getServerID()) 
+					System.out.println("ignored");
+				else
+					System.out.println(header_tokens);
 
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -62,30 +67,7 @@ public class Channel implements Runnable{
 	        }
 	}
 	
-	 private void handler(DatagramPacket packet) {
-		 String[] header_tokens = parseHeader(packet);
-		 
-		 System.out.println(header_tokens);
-		 
-		 if(Integer.parseInt(header_tokens[2]) == Peer.getServerID()) System.out.println("ignore");
-		
-	}
-	 
-	 public String[] parseHeader(DatagramPacket packet) {
-		 
-		 	ByteArrayInputStream stream = new ByteArrayInputStream(packet.getData());
-			BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
-			String header = "";
-			try {
-				header = reader.readLine();
-				System.out.println(header);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			return header.split("[ ]+");
-
-	 }
+	
 	
 }
