@@ -2,7 +2,10 @@ package peer;
 
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
@@ -20,7 +23,8 @@ public class Peer implements InterfaceRMI {
     private static Channel MDB;
     private static Channel MDR;
     
-    private static MsgForwarder msg_forwarder;
+    private static Database database;
+    private static Messages msg_forwarder;
         
  
     public static void main(String args[]) throws IOException {
@@ -59,9 +63,12 @@ public class Peer implements InterfaceRMI {
         new Thread(MC).start();
         new Thread(MDB).start();
         new Thread(MDR).start();
+
+        msg_forwarder = new Messages(version);
+       
+        database = new Database();
+		saveDatabase();
         
-        // controller initialization
-        msg_forwarder = new MsgForwarder(version);
         
         // print main info 
         System.out.println("version : " + version);
@@ -78,6 +85,25 @@ public class Peer implements InterfaceRMI {
 		
 	}
 
+	static void saveDatabase() {
+
+		try {
+			// saving of object in a file
+			FileOutputStream file = new FileOutputStream("peer" + server_id +"_db");
+	        ObjectOutputStream out = new ObjectOutputStream(file);
+	        
+	        // serialization of object
+	        out.writeObject(database);
+	        
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+        
+	}
+
 	@Override
 	public void backup(String file_path, int rep_degree) throws RemoteException {
 		Backup inititator = new Backup(file_path,rep_degree);
@@ -88,7 +114,7 @@ public class Peer implements InterfaceRMI {
 		return MDB;
 	}
 	
-	public static MsgForwarder getMsgForwarder(){
+	public static Messages getMsgForwarder(){
 		return msg_forwarder;
 	}
 

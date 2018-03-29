@@ -1,14 +1,12 @@
 package channel;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
-import common.Utils;
+
+import peer.Messages;
 import peer.Peer;
 
 
@@ -40,7 +38,8 @@ public class Channel implements Runnable{
 			try {
 				DatagramPacket packet = new DatagramPacket(buf, buf.length);
 				mcast_socket.receive(packet);
-				String[] header_tokens = Utils.parseHeader(packet);
+				
+				String[] header_tokens = Messages.parseHeader(packet);
 				if(Integer.parseInt(header_tokens[2]) == Peer.getServerID()) 
 					System.out.println("ignored");
 				else

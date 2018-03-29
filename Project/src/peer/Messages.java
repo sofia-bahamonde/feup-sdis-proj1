@@ -1,14 +1,19 @@
 package peer;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.DatagramPacket;
 
-public class MsgForwarder{
+public class Messages{
 	Double version;
 	
     public static byte CR = 0xD;
     public static byte LF = 0xA;
     private static String CRLF = "" + (char) CR + (char) LF;
 	
-	public MsgForwarder(double version) {
+	public Messages(double version) {
 		this.version = version;
 	}
 	
@@ -34,4 +39,23 @@ public class MsgForwarder{
 		
 		return msg;
 	}
+	
+
+	
+	public static String[] parseHeader(DatagramPacket packet) {
+		 
+	 	ByteArrayInputStream stream = new ByteArrayInputStream(packet.getData());
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+
+		String header = "";
+		try {
+			header = reader.readLine();
+			System.out.println(header);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return header.split("[ ]+");
+
+ }
 }
