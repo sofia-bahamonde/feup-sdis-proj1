@@ -1,9 +1,14 @@
-package peer;
+package channel;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+
+import peer.Peer;
 
 
 public class Channel implements Runnable{
@@ -34,8 +39,7 @@ public class Channel implements Runnable{
 			try {
 				DatagramPacket packet = new DatagramPacket(buf, buf.length);
 				mcast_socket.receive(packet);
-				String msg = new String(buf, 0, buf.length);
-				handler(msg);
+				handler(packet);
 
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -58,9 +62,30 @@ public class Channel implements Runnable{
 	        }
 	}
 	
-	 private void handler(String msg) {
-		// TODO Auto-generated method stub
+	 private void handler(DatagramPacket packet) {
+		 String[] header_tokens = parseHeader(packet);
+		 
+		 System.out.println(header_tokens);
+		 
+		 if(Integer.parseInt(header_tokens[2]) == Peer.getServerID()) System.out.println("ignore");
 		
 	}
+	 
+	 public String[] parseHeader(DatagramPacket packet) {
+		 
+		 	ByteArrayInputStream stream = new ByteArrayInputStream(packet.getData());
+			BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+
+			String header = "";
+			try {
+				header = reader.readLine();
+				System.out.println(header);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			return header.split("[ ]+");
+
+	 }
 	
 }
