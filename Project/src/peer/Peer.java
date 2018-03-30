@@ -66,9 +66,6 @@ public class Peer implements InterfaceRMI {
         new Thread(MDR).start();
 
         msg_forwarder = new MsgForwarder(version);
-       
-        database = new Database();
-		saveDatabase();
         
         
         // print main info 

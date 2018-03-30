@@ -7,8 +7,6 @@ import java.util.Arrays;
 
 import common.Utils;
 import peer.Chunk;
-import peer.FileManager;
-import peer.Peer;
 
 public class Backup implements Runnable{
 	
@@ -24,7 +22,7 @@ public class Backup implements Runnable{
 	public void run() {
 
 		try {
-			byte[] file_data = FileManager.loadFileBytes(file);
+			byte[] file_data = Utils.loadFileBytes(file);
 			String file_id = Utils.getFileID(file);
 			
 			// gets number of chunks
@@ -35,10 +33,7 @@ public class Backup implements Runnable{
 			System.out.println("Chunks: " + chunks_num);
 			System.out.println("Replication Degree: " + rep_degree);
 			
-			
-			System.out.println(Arrays.toString(file_data));
-			
-		 
+					 
 			for(int i =0; i < chunks_num; i++) {
 				
 				// gets chunk data

@@ -3,6 +3,7 @@ package messages;
 import java.net.DatagramPacket;
 
 import common.Utils;
+import peer.Chunk;
 import peer.Peer;
 
 public class MsgHandler implements Runnable{
@@ -40,7 +41,19 @@ public class MsgHandler implements Runnable{
 	}
 
 	private void handlePUCHUNK() {
-		Utils.parseBody(packet);
+		
+		// chunk info from header
+		String file_id=header[3];
+		int chunk_no = Integer.parseInt(header[4]);
+		int rep_degree= Integer.parseInt(header[5]);
+		
+		// chunk data from body
+		byte[] chunk_data =Utils.parseBody(packet);
+		
+		// save chunk
+		Chunk chunk = new Chunk(chunk_no,file_id,chunk_data, rep_degree);
+		chunk.save();
+		
 		System.out.println("PUTCHUNK RECEIVED");
 		
 	}
