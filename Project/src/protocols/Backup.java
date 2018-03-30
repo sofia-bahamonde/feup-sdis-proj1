@@ -35,6 +35,9 @@ public class Backup implements Runnable{
 			System.out.println("Chunks: " + chunks_num);
 			System.out.println("Replication Degree: " + rep_degree);
 			
+			
+			System.out.println(Arrays.toString(file_data));
+			
 		 
 			for(int i =0; i < chunks_num; i++) {
 				

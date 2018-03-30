@@ -9,8 +9,10 @@ import java.net.DatagramPacket;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Base64;
 
+import messages.MsgForwarder;
 import peer.Peer;
 
 public class Utils{
@@ -41,6 +43,31 @@ public class Utils{
 
 		return header.split("[ ]+");
 
+ }
+	
+	public static byte[] parseBody(DatagramPacket packet) {
+		 
+		ByteArrayInputStream stream = new ByteArrayInputStream(packet.getData());
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+
+		String header="";
+		
+		
+		try {
+			header += reader.readLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		int body_idx = header.length()+2*MsgForwarder.CRLF.length();
+		
+		byte[] body = Arrays.copyOfRange(packet.getData(),body_idx ,
+				packet.getLength());
+		
+		
+		System.out.println(Arrays.toString(body));
+		
+		return body;
  }
 	
 	 

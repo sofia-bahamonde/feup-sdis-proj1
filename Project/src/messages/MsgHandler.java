@@ -9,6 +9,8 @@ public class MsgHandler implements Runnable{
 
 	DatagramPacket packet;
 	
+	String[] header;
+	
 	public MsgHandler(DatagramPacket packet){
 		this.packet = packet;
 	}
@@ -16,7 +18,7 @@ public class MsgHandler implements Runnable{
 	@Override
 	public void run() {
 		
-		String[] header = Utils.parseHeader(packet);
+		header = Utils.parseHeader(packet);
 		
 		Integer server_id = Integer.parseInt(header[2]);
 		
@@ -30,10 +32,16 @@ public class MsgHandler implements Runnable{
 		
 		switch(operation){
 		case "PUTCHUNK":
-			System.out.println("PUTCHUNK RECEIVED");
+			handlePUCHUNK();
 		break;
 			
 		}
+		
+	}
+
+	private void handlePUCHUNK() {
+		Utils.parseBody(packet);
+		System.out.println("PUTCHUNK RECEIVED");
 		
 	}
 

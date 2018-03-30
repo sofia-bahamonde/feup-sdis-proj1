@@ -1,10 +1,5 @@
 package messages;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.DatagramPacket;
 
 import peer.Chunk;
 import peer.Peer;
@@ -14,7 +9,7 @@ public class MsgForwarder{
 	
     public static byte CR = 0xD;
     public static byte LF = 0xA;
-    private static String CRLF = "" + (char) CR + (char) LF;
+    public static String CRLF = "" + (char) CR + (char) LF;
 	
 	public MsgForwarder(double version) {
 		this.version = version;
@@ -28,6 +23,7 @@ public class MsgForwarder{
 						+ " " + chunk.getChunkNo()
 						+ " " + chunk.getRepDegree()
 						+ " " + CRLF + CRLF;
+
 		
 		byte[] msg = createMessage(header.getBytes(),chunk.getData());
 		Peer.getMDB().sendMessage(msg);
