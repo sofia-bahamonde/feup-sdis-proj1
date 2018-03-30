@@ -15,6 +15,15 @@ public class MsgForwarder{
 		this.version = version;
 	}
 	
+	public byte[] createMessage(byte[] header, byte[]body) {
+		
+		byte[] msg = new byte[header.length + body.length];
+		System.arraycopy(header, 0, msg, 0, header.length);
+		System.arraycopy(body, 0, msg, header.length, body.length);
+		
+		return msg;
+	}
+	
 	public void sendPUTCHUNK(Chunk chunk){
 		String header = "PUTCHUNK"  
 						+ " " + version 
@@ -30,14 +39,19 @@ public class MsgForwarder{
 						
 	}
 	
-	public byte[] createMessage(byte[] header, byte[]body) {
+	public void sendSTORED(Chunk chunk) {
+		String header = "STORED"
+						+ " " + version 
+						+ " " + Peer.getServerID()
+						+ " " + chunk.getFileId()
+						+ " " + chunk.getChunkNo()
+						+ " " + CRLF + CRLF;
 		
-		byte[] msg = new byte[header.length + body.length];
-		System.arraycopy(header, 0, msg, 0, header.length);
-		System.arraycopy(body, 0, msg, header.length, body.length);
-		
-		return msg;
+		Peer.getMDB().sendMessage(header.getBytes());
 	}
+	
+	
+
 	
 
 	

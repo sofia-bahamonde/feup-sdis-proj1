@@ -27,13 +27,7 @@ public class Backup implements Runnable{
 			
 			// gets number of chunks
 			int chunks_num= file_data.length / (Chunk.MAX_SIZE) +1;
-			
-			System.out.println("\n---- BACKUP ----");
-			System.out.println("File: " + file.getName());
-			System.out.println("Chunks: " + chunks_num);
-			System.out.println("Replication Degree: " + rep_degree);
-			
-					 
+								 
 			for(int i =0; i < chunks_num; i++) {
 				
 				// gets chunk data

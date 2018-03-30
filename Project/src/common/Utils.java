@@ -84,9 +84,7 @@ public class Utils{
 		
 		byte[] body = Arrays.copyOfRange(packet.getData(),body_idx ,
 				packet.getLength());
-		
-		
-		System.out.println(Arrays.toString(body));
+
 		
 		return body;
  }
