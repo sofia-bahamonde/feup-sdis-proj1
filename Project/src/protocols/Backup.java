@@ -27,6 +27,8 @@ public class Backup implements Runnable{
 			
 			// gets number of chunks
 			int chunks_num= file_data.length / (Chunk.MAX_SIZE) +1;
+			
+			System.out.println(chunks_num);
 								 
 			for(int i =0; i < chunks_num; i++) {
 				
@@ -37,7 +39,7 @@ public class Backup implements Runnable{
 					if(file_data.length % Chunk.MAX_SIZE ==0) {
 						data= new byte[0];
 					}else {
-						data= Arrays.copyOfRange(file_data, i*Chunk.MAX_SIZE, file_data.length %Chunk.MAX_SIZE);
+						data= Arrays.copyOfRange(file_data, i*Chunk.MAX_SIZE, i*Chunk.MAX_SIZE + (file_data.length % Chunk.MAX_SIZE));
 					}
 				}else {
 					data= Arrays.copyOfRange(file_data, i*Chunk.MAX_SIZE, (i+1)*Chunk.MAX_SIZE);

@@ -46,17 +46,43 @@ public class MsgHandler implements Runnable{
 		case "GETCHUNK":
 			handleGETCHUNK();
 			break;
+		case "CHUNK":
+			handleCHUNK();
+			break;
 			
 		}
 		
 	}
 
+	private void handleCHUNK() {
+		System.out.println("CHUNK RECEIVED");
+		
+		// parsing message
+		String file_id = header[3];
+		int chunk_no = Integer.parseInt(header[4]);
+		int rep_degree= Integer.parseInt(header[5]);
+		byte[] chunk_data =Utils.parseBody(packet);
+		
+		// create chunk 
+		Chunk chunk = new Chunk(chunk_no,file_id,chunk_data, rep_degree);
+		
+		if(Peer.getMDR().isSaving(chunk.getID())){
+			
+			chunk.restore();
+			
+			if(chunk_data.length < Chunk.MAX_SIZE ) {
+				Peer.getMDR().stopSave(chunk.getID());
+			}
+		}
+	}
+
 	private void handleGETCHUNK() {
 		System.out.println("GETCHUNK RECEIVED");
+		
 		String file_id = header[3];
 		int chunk_no = Integer.parseInt(header[4]);
 		
-		File file = new File(Peer.DIR +  chunk_no + "_"+ file_id);
+		File file = new File(Peer.CHUNKS +  chunk_no + "_"+ file_id);
 		
 		if(file.exists() && file.isFile()) {
 			try {
@@ -93,10 +119,11 @@ public class MsgHandler implements Runnable{
 
 	private void handleDELETE() {
 		System.out.println("DELETE RECEIVED");
+		
 		String file_id = header[3];
 
 		chunkFilter filter = new chunkFilter(file_id);
-	    File dir = new File(Peer.DIR);
+	    File dir = new File(Peer.CHUNKS);
 	    
 	    String[] list = dir.list(filter);
 	     
@@ -104,7 +131,7 @@ public class MsgHandler implements Runnable{
 
 		    
 	     for (String file_name : list){
-	    	 File file = new File(Peer.DIR + file_name);
+	    	 File file = new File(Peer.CHUNKS + file_name);
 	    	 file.delete();
 	     }
 		
@@ -131,6 +158,7 @@ public class MsgHandler implements Runnable{
 		
 		// chunk data from body
 		byte[] chunk_data =Utils.parseBody(packet);
+		
 		
 		// create chunk 
 		Chunk chunk = new Chunk(chunk_no,file_id,chunk_data, rep_degree);

@@ -27,7 +27,7 @@ public class Restore implements Runnable {
 			int chunks_num= file_data.length / (Chunk.MAX_SIZE) +1;
 								 
 			for(int i =0; i < chunks_num; i++) {
-				
+				Peer.getMDR().startSave(i + " " + file_id);
 				Peer.getMsgForwarder().sendGETCHUNK(i,file_id);
 
 			}
@@ -40,6 +40,7 @@ public class Restore implements Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		
 		
 	}

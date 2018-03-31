@@ -25,14 +25,13 @@ public class Peer implements InterfaceRMI {
     
     private static MsgForwarder msg_forwarder;
     
-	public static String DIR  = "CHUNKS_";
-        
- 
+	public static String CHUNKS  = "CHUNKS_";
+	public static String RESTORES  = "RESTORES_";
+	
     public static void main(String args[]) throws IOException {
     	
     	initialize(args);
     	
-
         try {
             Peer obj = new Peer();
             InterfaceRMI stub = (InterfaceRMI) UnicastRemoteObject.exportObject(obj, 0);
@@ -67,7 +66,8 @@ public class Peer implements InterfaceRMI {
 
         msg_forwarder = new MsgForwarder(version);
         
-        DIR += server_id + "/";
+        CHUNKS += server_id + "/";
+        RESTORES += server_id + "/";
         
         
         // print main info 
@@ -107,7 +107,6 @@ public class Peer implements InterfaceRMI {
 		return server_id;
 	}
 
-
 	
 	@Override
 	public void backup(String file_path, int rep_degree) throws RemoteException {
@@ -119,7 +118,6 @@ public class Peer implements InterfaceRMI {
 	public void delete(String file_path) throws RemoteException {
 		Delete initiator = new Delete(file_path);
 		new Thread(initiator).start();
-		
 	}
 
 	@Override
@@ -128,6 +126,8 @@ public class Peer implements InterfaceRMI {
 		new Thread(initiator).start();
 		
 	}
+
+
 
 
 }

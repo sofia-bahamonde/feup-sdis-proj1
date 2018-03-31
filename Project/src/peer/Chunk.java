@@ -43,33 +43,6 @@ public class Chunk{
 		return id;
 	}
 	
-	public void store() {
-		
-		File folder = new File(Peer.DIR);
-
-		 
-		if (!(folder.exists() && folder.isDirectory()))
-			folder.mkdir();
-
-		FileOutputStream out;
-		try {
-			out = new FileOutputStream(Peer.DIR + id);
-			out.write(data);
-			out.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	public boolean isStored() {
-		File file = new File(Peer.DIR +id);
-		
-		return file.exists() && file.isFile();
-	}
-	
 	public void backup() {
 		long wait_time =1;
 		int putchunk_sent=0;
@@ -97,7 +70,54 @@ public class Chunk{
 		Peer.getMC().stopSave(this.id);
 		
 	}
+	
+	public void store() {
+		
+		File folder = new File(Peer.CHUNKS);
 
+		 
+		if (!(folder.exists() && folder.isDirectory()))
+			folder.mkdir();
+
+		FileOutputStream out;
+		try {
+			out = new FileOutputStream(Peer.CHUNKS + id);
+			out.write(data);
+			out.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	
+	public void restore() {
+		File folder = new File(Peer.RESTORES);
+
+		 
+		if (!(folder.exists() && folder.isDirectory()))
+			folder.mkdir();
+
+		FileOutputStream out;
+		try {
+			out = new FileOutputStream(Peer.CHUNKS + id);
+			out.write(data);
+			out.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	public boolean isStored() {
+		File file = new File(Peer.CHUNKS +id);
+		
+		return file.exists() && file.isFile();
+	}
 
 
 

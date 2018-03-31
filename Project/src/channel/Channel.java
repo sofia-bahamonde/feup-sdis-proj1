@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 
 import messages.MsgHandler;
+import peer.Chunk;
 
 
 public class Channel implements Runnable{
@@ -33,7 +34,7 @@ public class Channel implements Runnable{
 
 	public void run(){
 
-		byte[] buf = new byte[1024];
+		byte[] buf = new byte[Chunk.MAX_SIZE + 1024];
 		boolean done = false;
 		
 		// receive messages
@@ -77,8 +78,12 @@ public class Channel implements Runnable{
 	}
 	
 	public void save(String chunk_id, int peer_id) {
-		if (logs.containsKey(chunk_id))
+		if (isSaving(chunk_id))
 				logs.get(chunk_id).add(peer_id);
+	}
+	
+	public boolean isSaving(String chunk_id) {
+		return logs.containsKey(chunk_id);
 	}
 
 	
