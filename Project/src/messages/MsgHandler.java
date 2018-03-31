@@ -1,5 +1,6 @@
 package messages;
 
+import java.io.File;
 import java.net.DatagramPacket;
 import java.util.Random;
 
@@ -64,9 +65,13 @@ public class MsgHandler implements Runnable{
 		// chunk data from body
 		byte[] chunk_data =Utils.parseBody(packet);
 		
-		// save chunk
+		// create chunk 
 		Chunk chunk = new Chunk(chunk_no,file_id,chunk_data, rep_degree);
-		chunk.save();
+		
+		// stored chunk if not stored already
+		if(!chunk.isStored()) {
+			chunk.store();
+		}
 		
 		// wait a random delay
 		Random rand = new Random();
