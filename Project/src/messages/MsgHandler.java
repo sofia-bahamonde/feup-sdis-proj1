@@ -22,20 +22,21 @@ public class MsgHandler implements Runnable{
 		
 		header = Utils.parseHeader(packet);
 		
-		Integer server_id = Integer.parseInt(header[2]);
+		int server_id = Integer.parseInt(header[2]);
+		
 		
 		// if message comes from self ignore it 
 		if(server_id == Peer.getServerID()) return;
-
-	
+		
 		String operation = header[0];
 		
 		switch(operation){
 		case "PUTCHUNK":
 			handlePUCHUNK();
+			break;
 		case "STORED":
 			handleSTRORED();
-		break;
+			break;
 			
 		}
 		
@@ -43,6 +44,12 @@ public class MsgHandler implements Runnable{
 
 	private void handleSTRORED() {
 		System.out.println("STORED RECEIVED");
+		String file_id=header[3];
+		int chunk_no = Integer.parseInt(header[4]);
+		
+		Chunk chunk = new Chunk(chunk_no,file_id,new byte[0], 0);
+		
+		Peer.getMC().save(chunk, Peer.getServerID());
 		
 	}
 
@@ -73,6 +80,7 @@ public class MsgHandler implements Runnable{
 		
 		// send STORED message
 		Peer.getMsgForwarder().sendSTORED(chunk);
+		
 		
 		
 	}

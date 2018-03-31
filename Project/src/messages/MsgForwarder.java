@@ -47,7 +47,7 @@ public class MsgForwarder{
 						+ " " + chunk.getChunkNo()
 						+ " " + CRLF + CRLF;
 		
-		Peer.getMDB().sendMessage(header.getBytes());
+		Peer.getMC().sendMessage(header.getBytes());
 	}
 	
 	

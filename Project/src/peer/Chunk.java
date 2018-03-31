@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class Chunk{
 	
@@ -13,6 +14,7 @@ public class Chunk{
 	private String file_id;
 	private byte[] data;
 	private int rep_degree;
+	private String id;
 	
 	String DIR  = "CHUNKS_" +Peer.getServerID() +"/";
 	
@@ -21,10 +23,35 @@ public class Chunk{
 		this.file_id = file_id;
 		this.data = data;
 		this.rep_degree= rep_degree;
+		this.id=chunk_no + "_" +file_id;
 	}
 	
 	public void backup() {
-		Peer.getMsgForwarder().sendPUTCHUNK(this);
+		long wait_time =1;
+		int putchunk_sent=0;
+		int stored =0;
+		
+		
+		do {
+			Peer.getMC().startSave(this);
+			Peer.getMsgForwarder().sendPUTCHUNK(this);
+			putchunk_sent++;
+			
+			try {
+				TimeUnit.SECONDS.sleep(wait_time);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			stored = Peer.getMC().getSaves(this);
+			
+			wait_time *=2;
+			
+		}while(stored<rep_degree && putchunk_sent !=5);
+		
+	
+		Peer.getMC().stopSave(this);
+		
 	}
 
 	public int getChunkNo() {
@@ -51,7 +78,7 @@ public class Chunk{
 
 		FileOutputStream out;
 		try {
-			out = new FileOutputStream(DIR + file_id + "_" +chunk_no);
+			out = new FileOutputStream(DIR + id);
 			out.write(data);
 			out.close();
 		} catch (FileNotFoundException e) {
@@ -60,6 +87,11 @@ public class Chunk{
 			e.printStackTrace();
 		}
 
+	}
+
+	public String getID() {
+		// TODO Auto-generated method stub
+		return id;
 	}
 
 

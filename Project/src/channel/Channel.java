@@ -4,10 +4,11 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.HashSet;
+import java.util.Hashtable;
 
-import common.Utils;
 import messages.MsgHandler;
-import peer.Peer;
+import peer.Chunk;
 
 
 public class Channel implements Runnable{
@@ -15,6 +16,8 @@ public class Channel implements Runnable{
 	public MulticastSocket mcast_socket;
 	public InetAddress mcast_addr;
 	public int mcast_port;
+	
+	private Hashtable<String,HashSet<Integer>> logs;
 	
 	public Channel(String address, String port) throws IOException{
 		
@@ -25,6 +28,7 @@ public class Channel implements Runnable{
 		mcast_socket.setTimeToLive(1);
 		mcast_socket.joinGroup(mcast_addr);
 		
+		logs=new Hashtable<String,HashSet<Integer>>();
 				
 	}
 
@@ -59,6 +63,26 @@ public class Channel implements Runnable{
 	        	e.printStackTrace();
 	        }
 	}
+
+
+	public void startSave(Chunk chunk) {
+		logs.put(chunk.getID(), new HashSet<Integer>());
+	}
+	
+	public int getSaves(Chunk chunk) {
+		return logs.get(chunk.getID()).size();
+	}
+	
+	public void stopSave(Chunk chunk) {
+		logs.remove(chunk.getID());
+	}
+	
+	public void save(Chunk chunk, int peer_id) {
+		if (logs.containsKey(chunk.getID()))
+				logs.get(chunk.getID()).add(peer_id);
+	}
+	
+	
 	
 
 	

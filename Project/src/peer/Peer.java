@@ -120,4 +120,8 @@ public class Peer implements InterfaceRMI {
 		return server_id;
 	}
 
+	public static Channel getMC() {
+		return MC;
+	}
+
 }
