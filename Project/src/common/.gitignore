@@ -1,2 +1,6 @@
 /InterfaceRMI.class
 /Utils.class
+/Utils$GenericExtFilter.class
+/Utils$fileidFilter.class
+/Utils$fileChunkFilter.class
+/Utils$chunkFilter.class

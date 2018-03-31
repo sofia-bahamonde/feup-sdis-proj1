@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 
 import messages.MsgHandler;
-import peer.Chunk;
 
 
 public class Channel implements Runnable{
@@ -65,22 +64,23 @@ public class Channel implements Runnable{
 	}
 
 
-	public void startSave(Chunk chunk) {
-		logs.put(chunk.getID(), new HashSet<Integer>());
+	public void startSave(String chunk_id) {
+		logs.put(chunk_id, new HashSet<Integer>());
 	}
 	
-	public int getSaves(Chunk chunk) {
-		return logs.get(chunk.getID()).size();
+	public int getSaves(String chunk_id) {
+		return logs.get(chunk_id).size();
 	}
 	
-	public void stopSave(Chunk chunk) {
-		logs.remove(chunk.getID());
+	public void stopSave(String chunk_id) {
+		logs.remove(chunk_id);
 	}
 	
-	public void save(Chunk chunk, int peer_id) {
-		if (logs.containsKey(chunk.getID()))
-				logs.get(chunk.getID()).add(peer_id);
+	public void save(String chunk_id, int peer_id) {
+		if (logs.containsKey(chunk_id))
+				logs.get(chunk_id).add(peer_id);
 	}
+
 	
 	
 	

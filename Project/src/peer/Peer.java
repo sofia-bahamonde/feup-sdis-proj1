@@ -2,10 +2,7 @@ package peer;
 
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
@@ -13,6 +10,8 @@ import channel.Channel;
 import common.InterfaceRMI;
 import messages.MsgForwarder;
 import protocols.Backup;
+import protocols.Delete;
+import protocols.Restore;
 
 public class Peer implements InterfaceRMI {
 	
@@ -24,8 +23,9 @@ public class Peer implements InterfaceRMI {
     private static Channel MDB;
     private static Channel MDR;
     
-    private static Database database;
     private static MsgForwarder msg_forwarder;
+    
+	public static String DIR  = "CHUNKS_";
         
  
     public static void main(String args[]) throws IOException {
@@ -67,6 +67,8 @@ public class Peer implements InterfaceRMI {
 
         msg_forwarder = new MsgForwarder(version);
         
+        DIR += server_id + "/";
+        
         
         // print main info 
         System.out.println("version : " + version);
@@ -83,34 +85,19 @@ public class Peer implements InterfaceRMI {
 		
 	}
 
-	static void saveDatabase() {
 
-		try {
-			// saving of object in a file
-			FileOutputStream file = new FileOutputStream("peer" + server_id +"_db");
-	        ObjectOutputStream out = new ObjectOutputStream(file);
-	        
-	        // serialization of object
-	        out.writeObject(database);
-	        
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-        
-	}
-
-	@Override
-	public void backup(String file_path, int rep_degree) throws RemoteException {
-		Backup inititator = new Backup(file_path,rep_degree);
-		new Thread(inititator).start();
-	}
-	
 	public static Channel getMDB() {
 		return MDB;
 	}
+	
+	public static Channel getMDR() {
+		return MDR;
+	}
+	
+	public static Channel getMC() {
+		return MC;
+	}
+
 	
 	public static MsgForwarder getMsgForwarder(){
 		return msg_forwarder;
@@ -120,8 +107,27 @@ public class Peer implements InterfaceRMI {
 		return server_id;
 	}
 
-	public static Channel getMC() {
-		return MC;
+
+	
+	@Override
+	public void backup(String file_path, int rep_degree) throws RemoteException {
+		Backup inititator = new Backup(file_path,rep_degree);
+		new Thread(inititator).start();
 	}
+
+	@Override
+	public void delete(String file_path) throws RemoteException {
+		Delete initiator = new Delete(file_path);
+		new Thread(initiator).start();
+		
+	}
+
+	@Override
+	public void restore(String file_path) throws RemoteException {
+		Restore initiator = new Restore(file_path);
+		new Thread(initiator).start();
+		
+	}
+
 
 }

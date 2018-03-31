@@ -31,14 +31,16 @@ public class TestApp {
             e.printStackTrace();
         }
         
+        String file_path;
+        
         switch(sub_protocol){
         	case "BACKUP":
 	        	if(args.length != 4) {
 	        		System.out.println("Error: Invalid arguements");
-	        		System.out.println("Usage: TestApp <peer_ap> <sub_protocol> <file_path> <rep_degree>");
+	        		System.out.println("Usage: TestApp <peer_ap> BACKUP <file_path> <rep_degree>");
 	        	}
 	        	
-	        	String file_path = args[2];
+	        	file_path = args[2];
 	        	int rep_degree = Integer.parseInt(args[3]);
 	        	
 	        	if(rep_degree >9) {
@@ -59,9 +61,38 @@ public class TestApp {
 	                 e.printStackTrace();
 	            }
 	        	break;
-            
-            
-        	
+        	case "DELETE":
+        		if(args.length != 3) {
+	        		System.out.println("Error: Invalid arguements");
+	        		System.out.println("Usage: TestApp <peer_ap> DELETE <file_path>");
+	        	}
+        		
+        		file_path = args[2];
+        		
+        		try {
+ 	               stub.delete(file_path);
+ 	               System.out.println("\nSent");
+ 	            } catch (RemoteException e) {
+ 	            	 System.err.println("Delete exception: " + e.toString());
+ 	                 e.printStackTrace();
+ 	            }
+ 	        	break;
+        	case "RESTORE":
+        		if(args.length != 3) {
+	        		System.out.println("Error: Invalid arguements");
+	        		System.out.println("Usage: TestApp <peer_ap> RESTORE <file_path>");
+	        	}
+        		
+        		file_path = args[2];
+        		
+        		try {
+ 	               stub.restore(file_path);
+ 	               System.out.println("\nSent");
+ 	            } catch (RemoteException e) {
+ 	            	 System.err.println("Delete exception: " + e.toString());
+ 	                 e.printStackTrace();
+ 	            }
+ 	        	break;
         	
         	
         	default:

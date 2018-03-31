@@ -1,6 +1,8 @@
 package messages;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.util.Random;
 
@@ -33,13 +35,78 @@ public class MsgHandler implements Runnable{
 		
 		switch(operation){
 		case "PUTCHUNK":
-			handlePUCHUNK();
+			handlePUTCHUNK();
 			break;
 		case "STORED":
 			handleSTRORED();
 			break;
+		case "DELETE":
+			handleDELETE();
+			break;
+		case "GETCHUNK":
+			handleGETCHUNK();
+			break;
 			
 		}
+		
+	}
+
+	private void handleGETCHUNK() {
+		System.out.println("GETCHUNK RECEIVED");
+		String file_id = header[3];
+		int chunk_no = Integer.parseInt(header[4]);
+		
+		File file = new File(Peer.DIR +  chunk_no + "_"+ file_id);
+		
+		if(file.exists() && file.isFile()) {
+			try {
+				byte[] chunk_data = Utils.loadFileBytes(file);
+				
+				Chunk chunk =new Chunk(chunk_no, file_id,chunk_data,0);
+				
+				// wait a random delay
+				Random rand = new Random();
+				int  n = rand.nextInt(400) + 1;
+				
+				Peer.getMDR().startSave(chunk.getID());
+				
+				try {
+					Thread.sleep(n);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				} 
+				
+				int restored = Peer.getMDR().getSaves(chunk.getID());
+				
+				if(restored ==0)
+				Peer.getMsgForwarder().sendCHUNK(chunk);
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+		
+	}
+
+	private void handleDELETE() {
+		System.out.println("DELETE RECEIVED");
+		String file_id = header[3];
+
+		chunkFilter filter = new chunkFilter(file_id);
+	    File dir = new File(Peer.DIR);
+	    
+	    String[] list = dir.list(filter);
+	     
+	     if (list.length == 0) return;
+
+		    
+	     for (String file_name : list){
+	    	 File file = new File(Peer.DIR + file_name);
+	    	 file.delete();
+	     }
 		
 	}
 
@@ -48,13 +115,13 @@ public class MsgHandler implements Runnable{
 		String file_id=header[3];
 		int chunk_no = Integer.parseInt(header[4]);
 		
-		Chunk chunk = new Chunk(chunk_no,file_id,new byte[0], 0);
+		String chunk_id = chunk_no + "_" +file_id; 
 		
-		Peer.getMC().save(chunk, Peer.getServerID());
+		Peer.getMC().save(chunk_id, Peer.getServerID());
 		
 	}
 
-	private void handlePUCHUNK() {
+	private void handlePUTCHUNK() {
 		System.out.println("PUTCHUNK RECEIVED");
 		
 		// chunk info from header
@@ -89,5 +156,19 @@ public class MsgHandler implements Runnable{
 		
 		
 	}
+	
+	public class chunkFilter implements FilenameFilter {
+		
+	       private String file_id;
+		
+	       public chunkFilter(String file_id) {
+	         this.file_id = file_id;             
+	       }
+		       
+	       public boolean accept(File dir, String name) {
+	         return (name.endsWith(file_id));
+	       }
+	    }
+	
 
 }

@@ -16,7 +16,6 @@ public class Chunk{
 	private int rep_degree;
 	private String id;
 	
-	public static final String DIR  = "CHUNKS_" +Peer.getServerID() +"/";
 	
 	public Chunk(int chunk_no,String file_id, byte[] data, int rep_degree ) {
 		this.chunk_no =chunk_no;
@@ -46,7 +45,7 @@ public class Chunk{
 	
 	public void store() {
 		
-		File folder = new File(DIR);
+		File folder = new File(Peer.DIR);
 
 		 
 		if (!(folder.exists() && folder.isDirectory()))
@@ -54,7 +53,7 @@ public class Chunk{
 
 		FileOutputStream out;
 		try {
-			out = new FileOutputStream(DIR + id);
+			out = new FileOutputStream(Peer.DIR + id);
 			out.write(data);
 			out.close();
 		} catch (FileNotFoundException e) {
@@ -66,7 +65,7 @@ public class Chunk{
 	}
 
 	public boolean isStored() {
-		File file = new File(DIR +id);
+		File file = new File(Peer.DIR +id);
 		
 		return file.exists() && file.isFile();
 	}
@@ -78,7 +77,7 @@ public class Chunk{
 		
 		
 		do {
-			Peer.getMC().startSave(this);
+			Peer.getMC().startSave(this.id);
 			Peer.getMsgForwarder().sendPUTCHUNK(this);
 			putchunk_sent++;
 			
@@ -88,14 +87,14 @@ public class Chunk{
 				e.printStackTrace();
 			}
 			
-			stored = Peer.getMC().getSaves(this);
+			stored = Peer.getMC().getSaves(this.id);
 			
 			wait_time *=2;
 			
 		}while(stored<rep_degree && putchunk_sent !=5);
 		
 	
-		Peer.getMC().stopSave(this);
+		Peer.getMC().stopSave(this.id);
 		
 	}
 

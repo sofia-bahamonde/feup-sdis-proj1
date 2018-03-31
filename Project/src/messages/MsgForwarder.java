@@ -39,6 +39,20 @@ public class MsgForwarder{
 						
 	}
 	
+	public void sendCHUNK(Chunk chunk) {
+		String header = "CHUNK"  
+				+ " " + version 
+				+ " " + Peer.getServerID()
+				+ " " + chunk.getFileId()
+				+ " " + chunk.getChunkNo()
+				+ " " + CRLF + CRLF;
+
+
+		byte[] msg = createMessage(header.getBytes(),chunk.getData());
+		Peer.getMDR().sendMessage(msg);
+				
+	}
+	
 	public void sendSTORED(Chunk chunk) {
 		String header = "STORED"
 						+ " " + version 
@@ -50,6 +64,30 @@ public class MsgForwarder{
 		Peer.getMC().sendMessage(header.getBytes());
 	}
 	
+	public void sendDELETE(String file_id) {
+		String header = "DELETE"
+						+ " " + version
+						+ " " + Peer.getServerID()
+						+ " " + file_id
+						+ " " + CRLF + CRLF;
+		
+		Peer.getMC().sendMessage(header.getBytes());
+	}
+
+	public void sendGETCHUNK(int chunk_no, String file_id) {
+		String header = "GETCHUNK"
+				+ " " + version 
+				+ " " + Peer.getServerID()
+				+ " " + file_id
+				+ " " + chunk_no
+				+ " " + CRLF + CRLF;
+
+			Peer.getMC().sendMessage(header.getBytes());
+		
+	}
+
+
+
 	
 
 	
