@@ -83,5 +83,10 @@ public class Disk implements Serializable{
 	}
 
 
+	public ArrayList<Chunk> getStoredChunks() {
+		return chunks_stored;
+	}
+
+
 	
 }

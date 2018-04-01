@@ -10,6 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 
 import channel.Channel;
 import channel.MDRChannel;
@@ -110,7 +111,6 @@ public class Peer implements InterfaceRMI {
 			in.close();
 			
 		} catch (FileNotFoundException e) {
-			System.out.println("yo");
 			disk = new Disk();
 			saveDisk();
 		} catch (ClassNotFoundException e) {
@@ -178,9 +178,15 @@ public class Peer implements InterfaceRMI {
 		System.out.println("Disk memory capacity: " + disk.getCapacity()+ " KBytes");
 		System.out.println("Disk memory used: " + disk.getUsedMem()+ " KBytes");
 		
-		System.out.println("\nCHUNKS");
-		for(int i=0; i < chunks_stored.len; i++) {
+		if(disk.getUsedMem() > 0) {
+			ArrayList<Chunk> chunks = disk.getStoredChunks();
 			
+			System.out.println("\nCHUNKS");
+			for(int i=0; i < chunks.size(); i++) {
+				System.out.println("ID: "+ chunks.get(i).getID());
+				System.out.println("SIZE: "+ chunks.get(i).getData().length);
+				System.out.println("REP DEGREE: " + chunks.get(i).getRepDegree()); // TODO: change to perceived
+			}
 		}
 		
 	}
