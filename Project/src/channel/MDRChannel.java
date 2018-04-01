@@ -23,9 +23,9 @@ public class MDRChannel extends Channel{
 	}
 	
 	
-	public Chunk getSave(String file_id, int i) {
+	public ArrayList<Chunk> getSave(String file_id) {
 		if (restoring.containsKey(file_id))
-			return restoring.get(file_id).get(i);
+			return restoring.get(file_id);
 		return null;
 	}
 	

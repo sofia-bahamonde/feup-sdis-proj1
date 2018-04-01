@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.util.Arrays;
 import java.util.Random;
 
 import common.Utils;
@@ -97,7 +96,7 @@ public class MsgHandler implements Runnable{
 					e.printStackTrace();
 				} 
 				
-				//int restored = Peer.getMDR().getSaves(chunk.getID());
+				// TODO :int restored = Peer.getMDR().getSaves(chunk.getID());
 				
 				//if(restored ==0)
 				Peer.getMsgForwarder().sendCHUNK(chunk);

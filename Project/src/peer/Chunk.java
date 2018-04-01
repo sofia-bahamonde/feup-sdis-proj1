@@ -92,26 +92,6 @@ public class Chunk{
 
 	}
 
-	
-	public void restore() {
-		File folder = new File(Peer.RESTORES);
-
-		 
-		if (!(folder.exists() && folder.isDirectory()))
-			folder.mkdir();
-
-		FileOutputStream out;
-		try {
-			out = new FileOutputStream(Peer.RESTORES + id);
-			out.write(data);
-			out.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-	}
 
 	public boolean isStored() {
 		File file = new File(Peer.CHUNKS +id);
