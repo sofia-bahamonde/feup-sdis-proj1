@@ -53,6 +53,8 @@ public class Restore implements Runnable {
 			ArrayList<Chunk> chunks = Peer.getMDR().getSave(file_id);
 			Peer.getMDR().stopSave(file_id);
 			
+			
+			
 			if(chunks.size() != chunks_num) {
 				System.out.println("RESTORE:: fail");
 				System.out.println("Chunks were lost");
@@ -67,7 +69,6 @@ public class Restore implements Runnable {
 				
 				byte [] chunk_data = chunks.get(j).getData();
 				
-				System.out.println(chunk_data.length);
 				
 				tmp = new byte[file_data.length + chunk_data.length];
 				System.arraycopy(file_data, 0, tmp, 0, file_data.length);

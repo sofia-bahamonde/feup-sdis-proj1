@@ -43,6 +43,15 @@ public class Chunk{
 		return id;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null) return false;
+
+		Chunk chunk = (Chunk) obj;
+		return (chunk_no == chunk.getChunkNo() && file_id.equals(chunk.getFileId()));
+		
+	}
+	
 	public void backup() {
 		long wait_time =1;
 		int putchunk_sent=0;

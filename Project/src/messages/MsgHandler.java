@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.util.ArrayList;
 import java.util.Random;
 
 import common.Utils;
@@ -79,6 +80,8 @@ public class MsgHandler implements Runnable{
 		
 		File file = new File(Peer.CHUNKS +  chunk_no + "_"+ file_id);
 		
+		Peer.getMDR().startSave(file_id);
+		
 		if(file.exists() && file.isFile()) {
 			try {
 				byte[] chunk_data = Utils.loadFileBytes(file);
@@ -96,10 +99,12 @@ public class MsgHandler implements Runnable{
 					e.printStackTrace();
 				} 
 				
-				// TODO :int restored = Peer.getMDR().getSaves(chunk.getID());
+				ArrayList<Chunk> chunks =Peer.getMDR().getSave(file_id);
 				
-				//if(restored ==0)
-				Peer.getMsgForwarder().sendCHUNK(chunk);
+				
+				if(chunks != null)
+				if(!chunks.contains(new Chunk(chunk_no, file_id, new byte[0], 0)))
+						Peer.getMsgForwarder().sendCHUNK(chunk);
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -107,6 +112,8 @@ public class MsgHandler implements Runnable{
 			}
 			
 		}
+		
+		Peer.getMDR().stopSave(file_id);
 		
 		
 	}
