@@ -80,34 +80,6 @@ public class Chunk{
 		
 	}
 	
-	public void store() {
-		
-		File folder = new File(Peer.CHUNKS);
-
-		 
-		if (!(folder.exists() && folder.isDirectory()))
-			folder.mkdir();
-
-		FileOutputStream out;
-		try {
-			out = new FileOutputStream(Peer.CHUNKS + id);
-			out.write(data);
-			out.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-
-	public boolean isStored() {
-		File file = new File(Peer.CHUNKS +id);
-		
-		return file.exists() && file.isFile();
-	}
-
 
 
 

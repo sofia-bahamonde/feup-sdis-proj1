@@ -165,8 +165,8 @@ public class MsgHandler implements Runnable{
 		Chunk chunk = new Chunk(chunk_no,file_id,chunk_data, rep_degree);
 		
 		// stored chunk if not stored already
-		if(!chunk.isStored()) {
-			chunk.store();
+		if(!Peer.getDisk().isStored(chunk)) {
+			Peer.getDisk().storeChunk(chunk);
 		}
 		
 		// wait a random delay

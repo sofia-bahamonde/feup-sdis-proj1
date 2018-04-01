@@ -2,7 +2,12 @@ package peer;
 
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
@@ -28,6 +33,10 @@ public class Peer implements InterfaceRMI {
     
 	public static String CHUNKS  = "CHUNKS_";
 	public static String RESTORES  = "RESTORES_";
+	public static String DISK = "disk_";
+	
+	private static Disk disk;
+
 	
     public static void main(String args[]) throws IOException {
     	
@@ -69,6 +78,9 @@ public class Peer implements InterfaceRMI {
         
         CHUNKS += server_id + "/";
         RESTORES += server_id + "/";
+        DISK += server_id + ".data";
+        
+        loadDisk();
         
         
         // print main info 
@@ -86,6 +98,38 @@ public class Peer implements InterfaceRMI {
 		
 	}
 
+
+	private static void loadDisk() throws IOException {
+
+		FileInputStream stream;
+		try {
+		
+			stream = new FileInputStream(DISK);
+			ObjectInputStream in = new ObjectInputStream(stream);
+			disk = (Disk) in.readObject();
+			in.close();
+			
+		} catch (FileNotFoundException e) {
+			System.out.println("yo");
+			disk = new Disk();
+			saveDisk();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+	}
+	
+	public static void saveDisk() throws IOException {
+		FileOutputStream stream = new FileOutputStream(Peer.DISK);
+
+		ObjectOutputStream out = new ObjectOutputStream(stream);
+
+		out.writeObject(disk);
+
+		out.close();
+		
+	}
 
 	public static Channel getMDB() {
 		return MDB;
@@ -126,6 +170,23 @@ public class Peer implements InterfaceRMI {
 		Restore initiator = new Restore(file_path);
 		new Thread(initiator).start();
 		
+	}
+
+	@Override
+	public void state() throws RemoteException {
+		System.out.println("\nPEER STATE");
+		System.out.println("Disk memory capacity: " + disk.getCapacity()+ " KBytes");
+		System.out.println("Disk memory used: " + disk.getUsedMem()+ " KBytes");
+		
+		System.out.println("\nCHUNKS");
+		for(int i=0; i < chunks_stored.len; i++) {
+			
+		}
+		
+	}
+
+	public static Disk getDisk() {
+		return disk;
 	}
 
 

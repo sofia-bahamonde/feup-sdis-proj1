@@ -93,7 +93,15 @@ public class TestApp {
  	                 e.printStackTrace();
  	            }
  	        	break;
-        	
+        	case "STATE":
+        		try {
+  	               stub.state();
+  	               System.out.println("\nSent");
+  	            } catch (RemoteException e) {
+  	            	 System.err.println("Delete exception: " + e.toString());
+  	                 e.printStackTrace();
+  	            }
+  	        	break;
         	
         	default:
         		System.out.println("Error: Invalid subprotocol");

@@ -10,4 +10,6 @@ public interface InterfaceRMI extends Remote {
 
 	void restore(String file_path) throws RemoteException;
 
+	void state()throws RemoteException;
+
 }
