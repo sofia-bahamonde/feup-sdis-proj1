@@ -3,6 +3,8 @@ package protocols;
 import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
 
 import common.Utils;
 import peer.Chunk;
@@ -18,24 +20,33 @@ public class Restore implements Runnable {
 
 	@Override
 	public void run() {
-		byte[] file_data;
 		try {
-			file_data = Utils.loadFileBytes(file);
 			String file_id = Utils.getFileID(file);
 			
-			// gets number of chunks
-			int chunks_num= file_data.length / (Chunk.MAX_SIZE) +1;
+			// TODO: Store file info
+			int chunks_num= (int) (file.length() / (Chunk.MAX_SIZE) +1);
+			
+			Peer.getMDR().startSave(file_id);
 								 
 			for(int i =0; i < chunks_num; i++) {
-				Peer.getMDR().startSave(i + " " + file_id);
+				
 				Peer.getMsgForwarder().sendGETCHUNK(i,file_id);
-
+				
+				
+				try {
+					TimeUnit.MILLISECONDS.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+				Chunk chunk = Peer.getMDR().getSave(file_id,i);
+				
+				chunk.restore();
 			}
 			
+			Peer.getMDR().stopSave(file_id);
 			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

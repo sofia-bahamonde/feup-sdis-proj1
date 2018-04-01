@@ -1,6 +1,8 @@
 package messages;
 
 
+import java.util.Arrays;
+
 import peer.Chunk;
 import peer.Peer;
 
@@ -45,6 +47,7 @@ public class MsgForwarder{
 				+ " " + Peer.getServerID()
 				+ " " + chunk.getFileId()
 				+ " " + chunk.getChunkNo()
+				+ " " + chunk.getRepDegree()
 				+ " " + CRLF + CRLF;
 
 
@@ -81,6 +84,7 @@ public class MsgForwarder{
 				+ " " + file_id
 				+ " " + chunk_no
 				+ " " + CRLF + CRLF;
+		
 
 			Peer.getMC().sendMessage(header.getBytes());
 		

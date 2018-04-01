@@ -7,6 +7,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 import channel.Channel;
+import channel.MDRChannel;
 import common.InterfaceRMI;
 import messages.MsgForwarder;
 import protocols.Backup;
@@ -21,7 +22,7 @@ public class Peer implements InterfaceRMI {
     
     private static Channel MC;
     private static Channel MDB;
-    private static Channel MDR;
+    private static MDRChannel MDR;
     
     private static MsgForwarder msg_forwarder;
     
@@ -57,7 +58,7 @@ public class Peer implements InterfaceRMI {
         // communication channels initialization
         MC = new Channel(args[3], args[4]);
         MDB = new Channel(args[5], args[6]);
-        MDR = new Channel(args[7], args[8]);
+        MDR = new MDRChannel(args[7], args[8]);
         
         // start channel threads
         new Thread(MC).start();
@@ -90,7 +91,7 @@ public class Peer implements InterfaceRMI {
 		return MDB;
 	}
 	
-	public static Channel getMDR() {
+	public static MDRChannel getMDR() {
 		return MDR;
 	}
 	

@@ -102,7 +102,7 @@ public class Chunk{
 
 		FileOutputStream out;
 		try {
-			out = new FileOutputStream(Peer.CHUNKS + id);
+			out = new FileOutputStream(Peer.RESTORES + id);
 			out.write(data);
 			out.close();
 		} catch (FileNotFoundException e) {

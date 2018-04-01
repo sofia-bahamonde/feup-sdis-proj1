@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.util.Arrays;
 import java.util.Random;
 
 import common.Utils;
@@ -63,17 +64,11 @@ public class MsgHandler implements Runnable{
 		int rep_degree= Integer.parseInt(header[5]);
 		byte[] chunk_data =Utils.parseBody(packet);
 		
-		// create chunk 
-		Chunk chunk = new Chunk(chunk_no,file_id,chunk_data, rep_degree);
-		
-		if(Peer.getMDR().isSaving(chunk.getID())){
-			
-			chunk.restore();
-			
-			if(chunk_data.length < Chunk.MAX_SIZE ) {
-				Peer.getMDR().stopSave(chunk.getID());
-			}
+		if(Peer.getMDR().isSaving(file_id)){
+			Chunk chunk = new Chunk(chunk_no,file_id,chunk_data, rep_degree);
+			Peer.getMDR().save(file_id, chunk);
 		}
+			
 	}
 
 	private void handleGETCHUNK() {
@@ -81,6 +76,7 @@ public class MsgHandler implements Runnable{
 		
 		String file_id = header[3];
 		int chunk_no = Integer.parseInt(header[4]);
+	
 		
 		File file = new File(Peer.CHUNKS +  chunk_no + "_"+ file_id);
 		
@@ -94,7 +90,6 @@ public class MsgHandler implements Runnable{
 				Random rand = new Random();
 				int  n = rand.nextInt(400) + 1;
 				
-				Peer.getMDR().startSave(chunk.getID());
 				
 				try {
 					Thread.sleep(n);
@@ -102,9 +97,9 @@ public class MsgHandler implements Runnable{
 					e.printStackTrace();
 				} 
 				
-				int restored = Peer.getMDR().getSaves(chunk.getID());
+				//int restored = Peer.getMDR().getSaves(chunk.getID());
 				
-				if(restored ==0)
+				//if(restored ==0)
 				Peer.getMsgForwarder().sendCHUNK(chunk);
 				
 			} catch (IOException e) {

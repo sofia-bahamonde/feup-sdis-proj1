@@ -78,13 +78,11 @@ public class Channel implements Runnable{
 	}
 	
 	public void save(String chunk_id, int peer_id) {
-		if (isSaving(chunk_id))
+		if (logs.containsKey(chunk_id))
 				logs.get(chunk_id).add(peer_id);
 	}
 	
-	public boolean isSaving(String chunk_id) {
-		return logs.containsKey(chunk_id);
-	}
+	
 
 	
 	
