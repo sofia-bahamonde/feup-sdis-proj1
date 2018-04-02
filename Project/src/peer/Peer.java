@@ -185,8 +185,10 @@ public class Peer implements InterfaceRMI {
 			for(int i=0; i < chunks.size(); i++) {
 				System.out.println("ID: "+ chunks.get(i).getID());
 				System.out.println("SIZE: "+ chunks.get(i).getData().length);
-				System.out.println("REP DEGREE: " + chunks.get(i).getRepDegree()); 
+				System.out.println("REP DEGREE: " + chunks.get(i).getActualRepDegree()); 
 			}
+			
+			System.out.println("");
 		}
 		
 	}

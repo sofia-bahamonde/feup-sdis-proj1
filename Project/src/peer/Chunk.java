@@ -1,13 +1,12 @@
 package peer;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
-public class Chunk{
-	
+public class Chunk implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+
 	public static int MAX_SIZE = 64*1000;
 	
 	private int chunk_no;
@@ -15,6 +14,7 @@ public class Chunk{
 	private byte[] data;
 	private int rep_degree;
 	private String id;
+	private int actual_rep_degree;
 	
 	
 	public Chunk(int chunk_no,String file_id, byte[] data, int rep_degree ) {
@@ -23,6 +23,7 @@ public class Chunk{
 		this.data = data;
 		this.rep_degree= rep_degree;
 		this.id=chunk_no + "_" +file_id;
+		this.actual_rep_degree=0;
 	}
 	
 
@@ -71,8 +72,6 @@ public class Chunk{
 			
 			stored = Peer.getMC().getSaves(this.id);
 			
-			System.out.println(stored);
-			
 			wait_time *=2;
 			
 		}while(stored<rep_degree && putchunk_sent !=5);
@@ -83,8 +82,13 @@ public class Chunk{
 	}
 
 
-	public void incRepDegree(int saves) {
-		rep_degree=saves +1;
+	public int getActualRepDegree() {
+		return actual_rep_degree;
+	}
+
+
+	public void incActualRepDegree(int saves) {
+		actual_rep_degree = 1+saves;
 		
 	}
 	

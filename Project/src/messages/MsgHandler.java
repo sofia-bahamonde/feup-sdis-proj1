@@ -161,13 +161,14 @@ public class MsgHandler implements Runnable{
 		// chunk info from header
 		String file_id=header[3];
 		int chunk_no = Integer.parseInt(header[4]);
+		int rep_degree = Integer.parseInt(header[5]);
 		
 		// chunk data from body
 		byte[] chunk_data =Utils.parseBody(packet);
 		
 		
 		// create chunk 
-		Chunk chunk = new Chunk(chunk_no,file_id,chunk_data, 1);
+		Chunk chunk = new Chunk(chunk_no,file_id,chunk_data,rep_degree );
 		
 		// stored chunk if not stored already
 		if(!Peer.getDisk().isStored(chunk)) {

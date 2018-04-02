@@ -73,6 +73,13 @@ public class Disk implements Serializable{
 		// store in database
 		chunks_stored.add(chunk);
 		
+		try {
+			Peer.saveDisk();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return true;
 		
 		
@@ -93,8 +100,15 @@ public class Disk implements Serializable{
 		
 		for(int i=0; i< chunks_stored.size();i++) {
 			if(chunks_stored.get(i).getID().equals(chunk_id)) {
-				chunks_stored.get(i).incRepDegree(saves);
+				chunks_stored.get(i).incActualRepDegree(saves);
 			}
+		}
+		
+		try {
+			Peer.saveDisk();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	
 	}

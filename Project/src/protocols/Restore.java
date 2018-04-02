@@ -31,13 +31,13 @@ public class Restore implements Runnable {
 				e1.printStackTrace();
 			}
 	
-			// TODO: Store file info
-			int chunks_num= (int) (file.length() / (Chunk.MAX_SIZE) +1);
-
-			
+			ArrayList<Chunk> chunks = new ArrayList<Chunk>();
 			Peer.getMDR().startSave(file_id);
+			
+			int i=0;
+			boolean stop = false;
 								 
-			for(int i =0; i < chunks_num; i++) {
+			do {
 				
 				Peer.getMsgForwarder().sendGETCHUNK(i,file_id);
 				
@@ -47,25 +47,34 @@ public class Restore implements Runnable {
 					e.printStackTrace();
 
 					
-			}
-			}
+				}
+				
+
+				Chunk chunk = Peer.getMDR().getSave(file_id).get(i);
+				
+				if(chunk == null) {
+					System.out.println("RESTORE:: fail");
+					System.out.println("Chunks were lost");
+					return;
+				}
+				
+				if(chunk.getData().length != Chunk.MAX_SIZE)
+					stop= true;
+				
+				chunks.add(chunk);
+				i++;
+				
+			}while(!stop);
 			
-			ArrayList<Chunk> chunks = Peer.getMDR().getSave(file_id);
 			Peer.getMDR().stopSave(file_id);
 			
 			
-			
-			if(chunks.size() != chunks_num) {
-				System.out.println("RESTORE:: fail");
-				System.out.println("Chunks were lost");
-				return;
-			}
-			
+		
 			// concatenate chunks into file data
 			byte [] file_data = new byte[0];
 			byte[] tmp = new byte[0];
 			
-			for(int j =0; j <chunks_num; j++) {
+			for(int j =0; j <chunks.size(); j++) {
 				
 				byte [] chunk_data = chunks.get(j).getData();
 				
