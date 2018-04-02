@@ -87,7 +87,7 @@ public class Chunk implements Serializable{
 	}
 
 
-	public void incActualRepDegree(int saves) {
+	public void setActualRepDegree(int saves) {
 		actual_rep_degree = 1+saves;
 		
 	}

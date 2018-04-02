@@ -27,11 +27,11 @@ public class Disk implements Serializable{
 	
 	
 	public long getCapacity() {
-		return CAPACITY/1000; // capacity in KBytes
+		return CAPACITY; // capacity in KBytes
 	}
 
 	public long getUsedMem() {
-		return used_mem/1000; // used memory in KBytes
+		return used_mem; // used memory in KBytes
 	}
 	
 	public boolean storeChunk(Chunk chunk) {
@@ -100,7 +100,7 @@ public class Disk implements Serializable{
 		
 		for(int i=0; i< chunks_stored.size();i++) {
 			if(chunks_stored.get(i).getID().equals(chunk_id)) {
-				chunks_stored.get(i).incActualRepDegree(saves);
+				chunks_stored.get(i).setActualRepDegree(saves);
 			}
 		}
 		
@@ -124,8 +124,9 @@ public class Disk implements Serializable{
 	}
 
 
-	public void reclaimSpace(int claimed_space) {
-		free_mem = free_mem-claimed_space;
+	public void reclaimSpace(int claimed_space, int used_mem) {
+		this.free_mem = claimed_space-used_mem;
+		this.used_mem = used_mem;
 		System.out.println("RECLAIM SUCCESS");
 		
 	}
@@ -144,10 +145,27 @@ public class Disk implements Serializable{
 		
 		file.delete();
 		
+		used_mem-= chunk.getData().length;
+		
+		
 		System.out.println("Chunk Deleted\n" + chunk.getID());
+		
+	
+	}
+
+
+	public void deleteChunks(String file_id) {
+		// Use iterators
+		for(int i=0; i< chunks_stored.size();i++) {
+			if(chunks_stored.get(i).getFileId().equals(file_id)) {
+				deleteChunk(chunks_stored.get(i));
+				i--;
+			}
+		}
 		
 		
 	}
+
 
 
 	

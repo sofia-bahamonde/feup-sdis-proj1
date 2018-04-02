@@ -50,8 +50,65 @@ public class MsgHandler implements Runnable{
 		case "CHUNK":
 			handleCHUNK();
 			break;
+		case "REMOVED":
+			handleREMOVED();
+		default:
+			break;
 			
 		}
+		
+	}
+
+	private void handleREMOVED() {
+		System.out.println("REMOVED RECEIVED");
+		
+		String file_id = header[3];
+		int chunk_no = Integer.parseInt(header[4]);
+		ArrayList<Chunk> chunks =Peer.getMDR().getSave(file_id);
+		
+		Chunk chunk = new Chunk(chunk_no, file_id, new byte[0], 0);
+		
+		if(chunks != null)
+			if(chunks.contains(chunk)) {
+				
+				int i=0;	
+				while(true) {
+					
+					if(chunks.get(i).getID().equals(chunk.getID())) {
+						chunk= chunks.get(i);
+						
+						chunk.setActualRepDegree(chunk.getActualRepDegree()-1);
+						
+						System.out.println(chunk.getActualRepDegree());
+						System.out.println(chunk.getRepDegree());
+						
+						if(chunk.getActualRepDegree() < chunk.getRepDegree()) {
+							
+							// wait a random delay
+							Random rand = new Random();
+							int  n = rand.nextInt(400) + 1;
+							
+							Peer.getMDB().startSave(chunk.getID());
+														
+							try {
+								Thread.sleep(n);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							
+							int save = Peer.getMDB().getSaves(chunk.getID());
+							
+							Peer.getMDB().stopSave(chunk.getID());
+							
+							if(save >0)
+								chunk.backup();
+								
+						}			
+					}
+					i++;
+				}
+			}
+			
 		
 	}
 
@@ -123,18 +180,8 @@ public class MsgHandler implements Runnable{
 		
 		String file_id = header[3];
 
-		chunkFilter filter = new chunkFilter(file_id);
-	    File dir = new File(Peer.CHUNKS);
-	    
-	    String[] list = dir.list(filter);
-	     
-	     if (list.length == 0) return;
-
-		    
-	     for (String file_name : list){
-	    	 File file = new File(Peer.CHUNKS + file_name);
-	    	 file.delete();
-	     }
+		Peer.getDisk().deleteChunks(file_id);
+	   
 		
 	}
 
@@ -169,6 +216,7 @@ public class MsgHandler implements Runnable{
 		
 		// create chunk 
 		Chunk chunk = new Chunk(chunk_no,file_id,chunk_data,rep_degree );
+		Peer.getMDB().save(chunk.getID(), 0);
 		
 		// stored chunk if not stored already
 		if(!Peer.getDisk().isStored(chunk)) {

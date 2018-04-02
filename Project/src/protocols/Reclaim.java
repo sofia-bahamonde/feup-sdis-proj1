@@ -1,7 +1,7 @@
 package protocols;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+
 
 import peer.Chunk;
 import peer.Peer;
@@ -16,10 +16,12 @@ public class Reclaim implements Runnable {
 
 	@Override
 	public void run() {
-		long used_mem = Peer.getDisk().getUsedMem();
+		int used_mem = (int) Peer.getDisk().getUsedMem();
+		
+		System.out.println(used_mem);
 		
 		if(used_mem <=reclaimed_space) {
-			Peer.getDisk().reclaimSpace(reclaimed_space);
+			Peer.getDisk().reclaimSpace(reclaimed_space,used_mem);
 			return;
 		}
 		
@@ -27,8 +29,7 @@ public class Reclaim implements Runnable {
 		
 		
 		
-		@SuppressWarnings("unchecked")
-		ArrayList<Chunk> chunks = (ArrayList<Chunk>) Peer.getDisk().getStoredChunks().clone();
+		ArrayList<Chunk> chunks =  Peer.getDisk().getStoredChunks();
 		
 		
 		int i =0;
@@ -37,7 +38,7 @@ public class Reclaim implements Runnable {
 		do {
 			Chunk chunk = chunks.get(i);
 			
-			Peer.getMsgForwarder().sendDELETED(chunk.getChunkNo(), chunk.getFileId());
+			Peer.getMsgForwarder().sendREMOVED(chunk.getChunkNo(), chunk.getFileId());
 			
 			Peer.getDisk().deleteChunk(chunk);
 			
@@ -45,10 +46,10 @@ public class Reclaim implements Runnable {
 			reclaimed_mem -= chunk.getData().length;
 			i++;
 			
-		}while(reclaimed_mem >0);
+		}while(reclaimed_mem >0 && i<chunks.size());
 		
 		
-		
+		Peer.getDisk().reclaimSpace(reclaimed_space,1);
 	}
 
 }

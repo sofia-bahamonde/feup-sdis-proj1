@@ -90,8 +90,8 @@ public class MsgForwarder{
 		
 	}
 
-	public void sendDELETED(int chunk_no, String file_id) {
-		String header = "DELETED"
+	public void sendREMOVED(int chunk_no, String file_id) {
+		String header = "REMOVED"
 				+ " " + version 
 				+ " " + Peer.getServerID()
 				+ " " + file_id
