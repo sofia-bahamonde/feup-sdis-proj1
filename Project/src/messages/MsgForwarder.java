@@ -86,7 +86,21 @@ public class MsgForwarder{
 				+ " " + CRLF + CRLF;
 		
 
-			Peer.getMC().sendMessage(header.getBytes());
+		Peer.getMC().sendMessage(header.getBytes());
+		
+	}
+
+	public void sendDELETED(int chunk_no, String file_id) {
+		String header = "DELETED"
+				+ " " + version 
+				+ " " + Peer.getServerID()
+				+ " " + file_id
+				+ " " + chunk_no
+				+ " " + CRLF + CRLF;
+		
+
+		Peer.getMC().sendMessage(header.getBytes());
+		
 		
 	}
 

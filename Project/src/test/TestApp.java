@@ -61,6 +61,7 @@ public class TestApp {
 	                 e.printStackTrace();
 	            }
 	        	break;
+	        	
         	case "DELETE":
         		if(args.length != 3) {
 	        		System.out.println("Error: Invalid arguements");
@@ -77,6 +78,7 @@ public class TestApp {
  	                 e.printStackTrace();
  	            }
  	        	break;
+ 	        	
         	case "RESTORE":
         		if(args.length != 3) {
 	        		System.out.println("Error: Invalid arguements");
@@ -93,6 +95,24 @@ public class TestApp {
  	                 e.printStackTrace();
  	            }
  	        	break;
+ 	        	
+        	case "RECLAIM":
+        		if(args.length != 3) {
+	        		System.out.println("Error: Invalid arguements");
+	        		System.out.println("Usage: TestApp <peer_ap> RECLAIM <space>");
+	        	}
+        		
+        		int space = Integer.parseInt(args[2]);
+        		
+        		try {
+ 	               stub.raclaim(space);
+ 	               System.out.println("\nSent");
+ 	            } catch (RemoteException e) {
+ 	            	 System.err.println("Delete exception: " + e.toString());
+ 	                 e.printStackTrace();
+ 	            }
+ 	        	break;	
+ 	        
         	case "STATE":
         		try {
   	               stub.state();

@@ -124,5 +124,31 @@ public class Disk implements Serializable{
 	}
 
 
+	public void reclaimSpace(int claimed_space) {
+		free_mem = free_mem-claimed_space;
+		System.out.println("RECLAIM SUCCESS");
+		
+	}
+
+
+	public void deleteChunk(Chunk chunk) {
+
+		for(int i=0; i< chunks_stored.size();i++) {
+			if(chunks_stored.get(i).getID().equals(chunk.getID())) {
+				chunks_stored.remove(i);
+				break;
+			}
+		}
+		
+		File file = new File(Peer.CHUNKS +  chunk.getID());
+		
+		file.delete();
+		
+		System.out.println("Chunk Deleted\n" + chunk.getID());
+		
+		
+	}
+
+
 	
 }

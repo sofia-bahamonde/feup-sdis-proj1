@@ -18,6 +18,7 @@ import common.InterfaceRMI;
 import messages.MsgForwarder;
 import protocols.Backup;
 import protocols.Delete;
+import protocols.Reclaim;
 import protocols.Restore;
 
 public class Peer implements InterfaceRMI {
@@ -151,8 +152,12 @@ public class Peer implements InterfaceRMI {
 	public static int getServerID() {
 		return server_id;
 	}
-
 	
+	public static Disk getDisk() {
+		return disk;
+	}
+
+
 	@Override
 	public void backup(String file_path, int rep_degree) throws RemoteException {
 		Backup inititator = new Backup(file_path,rep_degree);
@@ -193,8 +198,12 @@ public class Peer implements InterfaceRMI {
 		
 	}
 
-	public static Disk getDisk() {
-		return disk;
+
+	@Override
+	public void raclaim(int space) {
+		Reclaim initiator = new Reclaim(space);
+		new Thread(initiator).start();
+		
 	}
 
 

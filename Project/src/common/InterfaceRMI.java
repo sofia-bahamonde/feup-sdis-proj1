@@ -12,4 +12,6 @@ public interface InterfaceRMI extends Remote {
 
 	void state()throws RemoteException;
 
+	void raclaim(int space)throws RemoteException;
+
 }
