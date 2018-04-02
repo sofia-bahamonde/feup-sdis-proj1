@@ -71,12 +71,20 @@ public class Chunk{
 			
 			stored = Peer.getMC().getSaves(this.id);
 			
+			System.out.println(stored);
+			
 			wait_time *=2;
 			
 		}while(stored<rep_degree && putchunk_sent !=5);
 		
 	
 		Peer.getMC().stopSave(this.id);
+		
+	}
+
+
+	public void incRepDegree(int saves) {
+		rep_degree=saves +1;
 		
 	}
 	

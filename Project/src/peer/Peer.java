@@ -175,17 +175,17 @@ public class Peer implements InterfaceRMI {
 	@Override
 	public void state() throws RemoteException {
 		System.out.println("\nPEER STATE");
-		System.out.println("Disk memory capacity: " + disk.getCapacity()+ " KBytes");
+		System.out.println("Disk memory capacity: " + disk.getFreeMem()+ " KBytes");
 		System.out.println("Disk memory used: " + disk.getUsedMem()+ " KBytes");
 		
-		if(disk.getUsedMem() > 0) {
+		if(disk.hasChunks()) {
 			ArrayList<Chunk> chunks = disk.getStoredChunks();
 			
 			System.out.println("\nCHUNKS");
 			for(int i=0; i < chunks.size(); i++) {
 				System.out.println("ID: "+ chunks.get(i).getID());
 				System.out.println("SIZE: "+ chunks.get(i).getData().length);
-				System.out.println("REP DEGREE: " + chunks.get(i).getRepDegree()); // TODO: change to perceived
+				System.out.println("REP DEGREE: " + chunks.get(i).getRepDegree()); 
 			}
 		}
 		

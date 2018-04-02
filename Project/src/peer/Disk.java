@@ -88,5 +88,27 @@ public class Disk implements Serializable{
 	}
 
 
+	public void incRepDegree(String chunk_id, int saves) {
+		
+		
+		for(int i=0; i< chunks_stored.size();i++) {
+			if(chunks_stored.get(i).getID().equals(chunk_id)) {
+				chunks_stored.get(i).incRepDegree(saves);
+			}
+		}
+	
+	}
+
+
+	public long getFreeMem() {
+		return free_mem/1000;
+	}
+
+
+	public boolean hasChunks() {
+		return chunks_stored.size() >0;
+	}
+
+
 	
 }
