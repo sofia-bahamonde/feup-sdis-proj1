@@ -1,0 +1,158 @@
+\documentclass[a4paper]{article}
+
+
+\usepackage[portuguese]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{wrapfig, blindtext}
+\usepackage{listings}
+\usepackage{textcomp}
+\usepackage{color}
+\usepackage[dvipsnames]{xcolor}
+%\usepackage[left=1in,right=1in,top=1in,bottom=.8in]{geometry}
+\usepackage{float}
+\usepackage{titlesec}
+%\usepackage{csvtools}
+\usepackage[hidelinks]{hyperref}
+
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={black!80!black}
+}
+
+
+
+	%%%%%%%%%%% CONFIGURATION OF CODE INPUT %%%%%%%%%%%%%%%%%%%%%%
+\lstset{
+  language=Java,
+  tabsize=4,
+  captionpos=b,
+  numbers=left,
+  frame=lines,
+  breaklines=true,
+  rulecolor=\color{black},
+  title=Struct linkLayer,
+  commentstyle=\color{lightgray},
+  backgroundcolor=\color{white},
+  numberstyle=\color{gray},
+  keywordstyle=\color{BrickRed} \textbf,%otherkeywords={xdata},
+  keywords=[2]{xdata},
+  keywordstyle=[2]\color{Tan}\textbf,
+  identifierstyle=\color{black},
+  stringstyle=\color{Gray}\ttfamily,
+  basicstyle = \ttfamily \color{black} \footnotesize,
+  showstringspaces=false ,
+  % the more interesting/new bits
+  classoffset=1,% starting a new class
+  morekeywords={struct},
+  keywordstyle=\color{blue}\textbf,
+  classoffset=2,% starting another class
+  morekeywords={False},
+  keywordstyle=\color{green},
+  classoffset=0,% restore to default class if more customisations...
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\setlength{\textwidth}{16cm}
+\setlength{\textheight}{22cm}
+
+\title{\Huge\textbf{Report}\linebreak\linebreak\linebreak
+\linebreak\linebreak
+\includegraphics[scale=0.1]{feup-logo.png}\linebreak\linebreak
+\linebreak\linebreak
+\Large{Mestrado Integrado em Engenharia Informática e Computação} \linebreak\linebreak
+\Large{Sistemas Distribuídos}\linebreak
+}
+
+\author{\textbf{Turma 5:}\\
+Daniel Pereira Machado - 201506365 \\
+\linebreak\linebreak
+Sofia Catarina Bahamonde Alves - 201504570 \\
+\linebreak\linebreak \\
+\\ Faculdade de Engenharia da Universidade do Porto \\ Rua Roberto Frias, s\/n, 4200-465 Porto, Portugal \linebreak\linebreak\linebreak
+\linebreak\linebreak\vspace{1cm}}
+
+\maketitle
+\thispagestyle{empty}
+
+
+\newpage
+
+\section*{Concurrency Design}
+
+To solve the concurrency issues of the during the implementation of the PUTCHANK protocol we have chosen to implement one thread per multicast channel, with many protocols instances at a time – 4, and a bit of 5 – processing of different messages received on the same channel at the same time.
+\linebreak
+
+When the peer is initialized, three different threads are initialized too.
+
+
+\vspace{5mm}
+\lstset{title=""}
+\begin{lstlisting}
+    new Thread(MC).start();
+    new Thread(MDB).start();
+    new Thread(MDR).start();
+\end{lstlisting}
+
+Whereas is provided a system that with each protocol comes a new thread
+
+\vspace{5mm}
+\lstset{title=""}
+\begin{lstlisting}
+    @Override
+    public void backup(String file_path, int rep_degree) throws RemoteException {
+        Backup inititator = new Backup(file_path,rep_degree);
+        new Thread(inititator).start();
+    }
+
+    @Override
+    public void delete(String file_path) throws RemoteException {
+        Delete initiator = new Delete(file_path);
+        new Thread(initiator).start();
+    }
+
+    @Override
+    public void restore(String file_path) throws RemoteException {
+        Restore initiator = new Restore(file_path);
+        new Thread(initiator).start();
+    }
+\end{lstlisting}
+
+Therefore, in this implementation each channel has an attribute - logs – where the channel keeps the information relevant for processing messages belonging to that instance.
+
+\vspace{5mm}
+\lstset{title=""}
+\begin{lstlisting}
+	private Hashtable<String,HashSet<Integer>> logs;
+\end{lstlisting}
+
+And depending on the action it manages the information. This attribute is created upon the transmission, respectively reception, of the first message of its protocol instance, depending on whether or not the peer is the initiator of that instance.  Furthermore, it is kept in this hashtable, and retrieved in order to process every subsequent message belonging to that protocol instance.
+
+\vspace{5mm}
+\lstset{title=""}
+\begin{lstlisting}
+    public void startSave(String chunk_id) {
+        logs.put(chunk_id, new HashSet<Integer>());
+    }
+
+	public int getSaves(String chunk_id) {
+		return logs.get(chunk_id).size();
+	}
+
+	public void stopSave(String chunk_id) {
+		logs.remove(chunk_id);
+	}
+
+	public void save(String chunk_id, int peer_id) {
+		if (logs.containsKey(chunk_id))
+				logs.get(chunk_id).add(peer_id);
+	}
+\end{lstlisting}
+
+\end{document}
