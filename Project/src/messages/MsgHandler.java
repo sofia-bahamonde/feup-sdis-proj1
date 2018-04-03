@@ -64,23 +64,23 @@ public class MsgHandler implements Runnable{
 		
 		String file_id = header[3];
 		int chunk_no = Integer.parseInt(header[4]);
-		ArrayList<Chunk> chunks =Peer.getMDR().getSave(file_id);
 		
 		Chunk chunk = new Chunk(chunk_no, file_id, new byte[0], 0);
 		
-		if(chunks != null)
+		
+		ArrayList<Chunk> chunks = Peer.getDisk().getStoredChunks();
+	
 			if(chunks.contains(chunk)) {
-				
+			
 				int i=0;	
 				while(true) {
 					
 					if(chunks.get(i).getID().equals(chunk.getID())) {
 						chunk= chunks.get(i);
+	
 						
 						chunk.setActualRepDegree(chunk.getActualRepDegree()-1);
 						
-						System.out.println(chunk.getActualRepDegree());
-						System.out.println(chunk.getRepDegree());
 						
 						if(chunk.getActualRepDegree() < chunk.getRepDegree()) {
 							
@@ -96,19 +96,23 @@ public class MsgHandler implements Runnable{
 								e.printStackTrace();
 							}
 							
+							
+							
 							int save = Peer.getMDB().getSaves(chunk.getID());
+							
+							System.out.println("SAVES " + save);
 							
 							Peer.getMDB().stopSave(chunk.getID());
 							
-							if(save >0)
+							if(save ==0)
 								chunk.backup();
 								
-						}			
+						}
+						return;
 					}
 					i++;
 				}
-			}
-			
+			}			
 		
 	}
 
@@ -197,7 +201,7 @@ public class MsgHandler implements Runnable{
 		Peer.getMC().save(chunk_id,peer_id );
 		
 		if(Peer.getDisk().isStored(new Chunk(chunk_no,file_id, new byte[0],0))) 
-			Peer.getDisk().incRepDegree(chunk_id,Peer.getMC().getSaves(chunk_id));
+			Peer.getDisk().incRepDegree(chunk_id,Peer.getMC().getSaves(chunk_id)+1);
 		
 		
 	}

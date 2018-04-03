@@ -115,7 +115,7 @@ public class Disk implements Serializable{
 
 
 	public long getFreeMem() {
-		return free_mem/1000;
+		return free_mem;
 	}
 
 

@@ -70,6 +70,7 @@ public class Channel implements Runnable{
 	}
 	
 	public int getSaves(String chunk_id) {
+		if(logs.get(chunk_id) == null) return 0;
 		return logs.get(chunk_id).size();
 	}
 	

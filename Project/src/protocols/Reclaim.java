@@ -18,7 +18,6 @@ public class Reclaim implements Runnable {
 	public void run() {
 		int used_mem = (int) Peer.getDisk().getUsedMem();
 		
-		System.out.println(used_mem);
 		
 		if(used_mem <=reclaimed_space) {
 			Peer.getDisk().reclaimSpace(reclaimed_space,used_mem);
